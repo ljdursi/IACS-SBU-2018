@@ -1,0 +1,2255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Chapel's Home in the New Landscape of Scientific Frameworks (and what it can learn from the neighbours)</title>
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Average);
+      @import url(https://fonts.googleapis.com/css?family=Oswald);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body {
+        font-family: 'Average';
+      }
+      h1, h2, h3 {
+        font-family: 'Oswald';
+        font-weight: 400;
+        color: #348e28;
+        margin-bottom: 0;
+      }
+      .remark-slide-content h1 { font-size: 2.2em; }
+      .remark-slide-content h2 { font-size: 1.6em; }
+      .remark-slide-content h3 { font-size: 1.2em; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+      }
+      li p { line-height: 1.25em; }
+      .red { color: #fa0000; }
+      .black { color: #000000; }
+      .large { font-size: 2em; }
+      a, a > code {
+        color: rgb(38, 150, 38);
+        text-decoration: none;
+      }
+      code {
+        background: #e7e8e2;
+        border-radius: 5px;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-code-line-highlighted     { background-color: #373832; }
+      .pull-left {
+        float: left;
+        width: 47%;
+      }
+      .pull-right {
+        float: right;
+        width: 47%;
+      }
+      .pull-right ~ p {
+        clear: both;
+      }
+      #slideshow .slide .content code {
+        font-size: 0.8em;
+      }
+      #slideshow .slide .content pre code {
+        font-size: 0.9em;
+        padding: 15px;
+      }
+      .inverse {
+        background: #348e28;
+        color: #777872;
+        text-shadow: 0 0 20px #333;
+      }
+      .title {
+        background: #ffffff;
+        background-image: url(assets/Footer.png);
+        background-position: bottom;
+        background-repeat: no-repeat;
+        background-size: contain;
+      }
+      .inverse h1, .inverse h2 {
+        color: #f3f3f3;
+        line-height: 0.8em;
+      }
+      .inverse a {
+        color: #a3a3f3;
+        text-decoration: none;
+      }
+
+      /* Slide-specific styling */
+      #slide-inverse .footnote {
+        bottom: 12px;
+        left: 20px;
+      }
+      #slide-how .slides {
+        font-size: 0.9em;
+        position: absolute;
+        top:  151px;
+        right: 140px;
+      }
+      #slide-how .slides h3 {
+        margin-top: 0.2em;
+      }
+      #slide-how .slides .first, #slide-how .slides .second {
+        padding: 1px 20px;
+        height: 90px;
+        width: 120px;
+        -moz-box-shadow: 0 0 10px #777;
+        -webkit-box-shadow: 0 0 10px #777;
+        box-shadow: 0 0 10px #777;
+      }
+      #slide-how .slides .first {
+        background: #fff;
+        position: absolute;
+        top: 20%;
+        left: 20%;
+        z-index: 1;
+      }
+      #slide-how .slides .second {
+        position: relative;
+        background: #fff;
+        z-index: 0;
+      }
+
+      /* Two-column layout */
+      .left-column {
+        color: #777;
+        width: 20%;
+        height: 92%;
+        float: left;
+      }
+
+      .left-column h2,h3 {
+        color: #000;
+      }
+      .left-column h2:last-of-type, .left-column h3:last-child {
+        color: #348e28;
+      }
+      .right-column {
+        width: 75%;
+        float: right;
+        padding-top: 1em;
+        padding-bottom: 0em;
+      }
+      .right-column-cont {
+        width: 75%;
+        float: right;
+        padding-top: 0em;
+        margin-top: -1em;
+      }
+      .large-text {
+          font-size: 150%
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+name: title
+layout: true
+class: center, middle, title
+count: false
+---
+## Dispatches from the Convergence Coalface:
+## HPC, Big Data, and Large Scale Genomics
+Jonathan Dursi<br/>
+Senior Research Associate<br/>
+Centre for Computational Medicine<br/>
+The Hospital for Sick Children<br/>
+https://github.com/ljdursi/IACS-SBU-2018
+---
+name: my-background-1
+layout: false
+.left-column[
+  ## Who Am I?
+
+  ### Old HPC Hand...
+]
+.right-column[
+<img src="assets/img/springhill.png" style="float: center;" width=70%>
+
+Been doing this work for a while...
+]
+---
+name: my-background-1
+layout: false
+.left-column[
+  ## Who Am I?
+
+  ### Old HPC Hand...
+]
+.right-column[
+  Ex-astrophysicist turned large-scale computing.
+
+- Large-scale high-speed adaptive reactive fluid fluids
+
+- DOE ASCI Center at Chicago
+    - ASCI Red
+    - ASCI Blue
+    - ASCI White
+
+- FORTRAN, MPI, Oct-tree regular adaptive mesh
+
+- Joined HPC centre after postdoc
+
+- Worked with researchers on wide variety of problems
+]
+---
+.left-column[
+  ## Who Am I?
+
+  ### Old HPC Hand...
+
+  ### Living in Exciting Times...
+]
+.right-column[
+Started my career (c1995-2005) when large scale scientific computing was:
+
+* ~20 years of stability
+* Bunch of x86, MPI, ethernet or infiniband
+* No one outside of academia was much doing big number/data crunching
+* Pretty stable set of problems
+
+Now found myself thrust into the most exciting time in scientific computing
+maybe ever.
+]
+---
+## Ye Olde Entire Scientific Computing Worlde, c. 2002
+.center[<img src="assets/img/ScientificComputing2002.png" width=75%></img>]
+(map from http://mewo2.com/notes/terrain/)
+---
+## Ye Olde Entire Scientific Computing Worlde, c. 2002
+<img src="assets/img/ScientificComputing2002.png" width=33% style="float: right;"></img>
+
+It was a simpler time:
+* Statistial Computing largely the domain of the social sciences, some experimental sciences
+    - R was beginning to be quite popular
+
+* Physical scientists working with Big Iron or workstations, performing simulation or analysis of comparitively regular data sets
+    - FORTRAN/C/C++(?) + MPI + OpenMP
+    - FORTRAN/C/C++(?)
+    - MATLAB, IDL
+    - Python (Numeric)
+
+* Not a lot of SQL/database work in traditional technical computing, but communications up and downstream w/ statistical computing
+
+* Maybe infrequent ferry service between statistical computing and MATLAB communities
+---
+## And Then They Came, c. 2007
+.center[<img src="assets/img/ScientificComputing2007.png" width=75%></img>]
+---
+## And Then They Came, c. 2007
+.center[<img src="assets/img/ScientificComputing2007.png" width=33% style="float: right;"></img>]
+
+Widespread adption of computing and networking brought *data*, and lot of it.
+* "Internet-scale" companies were the first businesses to try taking advantage of all their data, but others soon followed
+    - Hadoop, HDFS spawned an entire ecosystem
+
+* In the sciences, genomics was in the right place at right time
+    - Success of Human Genome Project in 2003 
+    - High-throughput sequencing technologies becoming available
+    - Lots and lots of data - but how to process it?
+---
+## The Present Day, 2017
+.center[<img src="assets/img/ScientificComputing2017.png" width=75%></img>]
+---
+## The Present Day, 2017
+<img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
+
+* The newcomers started with some of their own tools (Hadoop, HDFS)
+
+* (Some of) the data-analysis handling communities jumped at the chance to start working with the data-intensive newcomers
+    - Similar needs, interests
+    - Python on the general computing and physical sciences side
+    - R on the statistics/Machine Learning (neé data mining) side
+
+* The simulation science communities, which makes up most of traditional HPC, were more skeptical
+    - Needs seemed very different
+    - Very different terminology
+    - Initial tools (Hadoop Map-Reduce) were all out of core, calculations very simple (analytics)
+    - Still not a lot of overlap
+---
+---
+.left-column[
+  ## Who Am I?
+
+  ### Old HPC Hand...
+
+  ### Living in Exciting Times..
+]
+.right-column[
+## New Communities Make things Exciting!
+<img src="assets/img/new-communities.png" style="float: right;" width=50%>
+
+* Internet-scale companies (Yahoo!, Google)
+  * Very large-scale image processing
+  * Machine learning:
+    * Sparse linear algebra
+    * k-d trees
+    * Calculations on unstructured meshes (graphs)
+    * Numerical optimization
+* Genomics
+  * Lots of data
+  * Lots of analysis challenges
+    * Large graphs for assembly, analysis
+    * Large tables for statistics
+* Building new frameworks
+
+]
+---
+.left-column[
+  ## Who Am I?
+
+  ### Old HPC Hand...
+
+  ### Living in Exciting Times...
+]
+.right-column[
+## New Hardware Makes things Exciting!
+<img src="assets/img/fpga.png" style="float: right;" width=50%>
+
+* Now:
+  * Large numbers of cores per socket
+  * GPUs/Phis
+* Next few years:
+  * FPGA (Intel: Broadwell + Arria 10, shipping 2017)
+  * Non-volatile Memory (external memory/out-of-core algorithms)
+]
+---
+.left-column[
+  ## Who Am I?
+
+  ### Old HPC Hand...
+
+  ### Living in Exciting Times...
+]
+.right-column[
+## Richer Scientific Problems Make things Exciting!
+
+* New science demands: cutting edge models are more complex.  An Astro example:
+    * 80s - gravity only N-body, galaxy-scale
+    * 90s - N-body, cosmological
+    * 00s - Hydrodynamics, cosmological
+    * 10s - Hydrodynamics + rad transport + cosmological
+]    
+---
+name: my-background-2
+layout: false
+.left-column[
+  ## Who Am I?
+
+  ### Old HPC Hand...
+
+  ### Living in Exciting Times...
+
+  ### Gone Into Genomics
+]
+.right-column[
+Started looking into Genomics in ~2013:
+ - Large computing needs
+ - Very interesting algorithmic challenges
+ - HPCer to the rescue, right?
+
+Made move in 2014
+
+- Ontario Institute for Cancer Research
+
+- Working with Jared Simpson, author of ABySS (amongst other things)
+    - First open-source human-scale de novo genome assembler
+    - MPI-based 
+]
+--
+.right-column-cont[
+- ABySS 2.0 just came out, with a new non-MPI mode
+]
+---
+name: my-background-2
+layout: false
+.left-column[
+  ## Who Am I?
+
+  ### Old HPC Hand...
+
+  ### Living in Exciting Times...
+
+  ### Gone Into Genomics
+]
+.right-column[
+In the meantime, one of the de-facto standards for genome analysis, GATK, 
+has just announced that version 4 will support distributed cluster computing &mdash; 
+using Apache Spark.
+
+.center[<img src="assets/img/gatk-spark-news.png" width=75%></img>]
+]
+---
+layout: false
+.left-column[
+  ## Outline
+]
+.right-column[
+- A survey of the evolving landscape of Big Computing frameworks
+
+- A tour of some common big-data computing problems
+    - Genomics and otherwise
+    - Not so different from complex simulations
+
+- A tour of programming models to tackle them, and lessons we can learn
+    - R
+    - Spark
+    - Dask
+    - Distributed TensorFlow
+    - Coarray Fortran
+    - Julia
+    - Rust, Swift
+
+- Where Chapel is, and what nearby territories look fertile
+]
+---
+.left-column[
+  ## Outline
+  
+  ### With problems in mind:
+
+  ### Grid PDES
+]
+.right-column[
+My perspective is based on the sorts of problems I've worked on.
+
+Will have those in mind when looking at languages and techniques.
+
+Started with high-speed reactive fluid flows, either fixed grid (structured or unstructured)
+or block-structured adaptive:
+
+.center[<img src="assets/img/amr.png" width=90%></img>]
+]
+---
+.left-column[
+  ## Outline
+  
+  ### With problems in mind:
+
+  ### Grid PDEs
+
+  ### Substring operations 
+]
+.right-column[
+(Much) more recently, working with genomics sequence data. 
+
+Assembly:
+- Have small fragments of sequence, must generate whole 
+- Graph methods (de Bruijn or overlap graph)
+- Find maximal unambiguous paths through the graph
+
+<table width=65%>
+<tbody>
+<tr><td><img src="assets/img/debruijn-graph.jpg" width=90%></img></td></tr>
+<tr><td>Figure from <a href="http://www.nature.com/nrg/journal/v14/n5/full/nrg3433.html">Nature Review Genetics</a></td></tr>
+</tbody>
+
+Or may have an assembled graph genome and try to find best match for
+given observed subsequence
+
+Or just count observed subsequences
+
+]
+---
+.left-column[
+  ## Outline
+  
+  ### With problems in mind:
+
+  ### Grid PDEs
+
+  ### Substring operations 
+
+  ### Large statistical analyses
+]
+.right-column[
+Or just large biostatistical analyses:
+
+Closest to my current day job (distributed analysis of private genomics data sets)
+
+Imagine RNA sequence expression data:
+- 100m fragments of sequence (imperfect sampling)
+- Assigned to particular RNA transcripts
+- Find out if transcripts are differentially expressed between case and condition
+
+Now do that for multiple tissue types, large population...
+
+And start correlating with other information (DNA variants, clinical data, phenotypic data,...)
+
+<table width=45%>
+<tbody>
+<tr><td><img src="assets/img/rnaseq.png" width=90%></img></td></tr>
+<tr><td>Figure from <a href="http://www.nature.com/nbt/journal/v32/n9/full/nbt.2931.html">Nature</a></td></tr>
+</tbody>
+]
+---
+layout: false
+class: center, middle, inverse
+## The Lay Of The Land: 2002, 2007, and 2017
+---
+## Ye Olde Entire Scientific Computing Worlde, c. 2002
+.center[<img src="assets/img/ScientificComputing2002.png" width=75%></img>]
+(map from http://mewo2.com/notes/terrain/)
+---
+## Ye Olde Entire Scientific Computing Worlde, c. 2002
+<img src="assets/img/ScientificComputing2002.png" width=33% style="float: right;"></img>
+
+It was a simpler time:
+* Statistial Computing largely the domain of the social sciences, some experimental sciences
+    - R was beginning to be quite popular
+
+* Physical scientists working with Big Iron or workstations, performing simulation or analysis of comparitively regular data sets
+    - FORTRAN/C/C++(?) + MPI + OpenMP
+    - FORTRAN/C/C++(?)
+    - MATLAB, IDL
+    - Python (Numeric)
+
+* Not a lot of SQL/database work in traditional technical computing, but communications up and downstream w/ statistical computing
+
+* Maybe infrequent ferry service between statistical computing and MATLAB communities
+---
+## And Then They Came, c. 2007
+.center[<img src="assets/img/ScientificComputing2007.png" width=75%></img>]
+---
+## And Then They Came, c. 2007
+.center[<img src="assets/img/ScientificComputing2007.png" width=33% style="float: right;"></img>]
+
+Widespread adption of computing and networking brought *data*, and lot of it.
+* "Internet-scale" companies were the first businesses to try taking advantage of all their data, but others soon followed
+    - Hadoop, HDFS spawned an entire ecosystem
+
+* In the sciences, genomics was in the right place at right time
+    - Success of Human Genome Project in 2003 
+    - High-throughput sequencing technologies becoming available
+    - Lots and lots of data - but how to process it?
+---
+## The Present Day, 2017
+.center[<img src="assets/img/ScientificComputing2017.png" width=75%></img>]
+---
+## The Present Day, 2017
+<img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
+
+* The newcomers started with some of their own tools (Hadoop, HDFS)
+
+* (Some of) the data-analysis handling communities jumped at the chance to start working with the data-intensive newcomers
+    - Similar needs, interests
+    - Python on the general computing and physical sciences side
+    - R on the statistics/Machine Learning (neé data mining) side
+
+* The simulation science communities, which makes up most of traditional HPC, were more skeptical
+    - Needs seemed very different
+    - Very different terminology
+    - Initial tools (Hadoop Map-Reduce) were all out of core, calculations very simple (analytics)
+    - Still not a lot of overlap
+---
+## The Present Day, 2017
+<img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
+
+Will argue that they are not so different, and there's a lot to learn (on both sides) across the data science/simulation science divide
+
+* Simulations are getting more complex, dynamic
+
+* Big data problems have long been in-memory, increasingly compute intensive
+
+* Moving towards each other in fits and starts
+---
+.left-column[
+## Big Data Problems
+]
+.right-column[
+Big Data problems same as HPC, if in different context
+
+- Large scale network problems
+    - Graph operations
+- Similarity computations, clustering, optimization, 
+    - Linear algebra
+    - Tree methods
+- Time series
+    - FFTs, smoothing, ...
+]
+---
+.left-column[
+## Big Data Problems
+
+### Linear algebra
+]
+.right-column[
+Almost any sort of numeric computation requires linear algebra.
+
+In many big-data applications, the linear algebra is _extremely_ sparse and unstructured;
+say doing similarity calculations of documents, using a bag-of-words model.
+
+If looking at ngrams, cardinality can be enormous, no real pattern to sparsity
+.center[<img src="assets/img/bag-of-words.png" width="75%"></img>]
+]
+---
+.left-column[
+## Big Data Problems
+
+### Linear algebra
+
+### Graph problems
+]
+.right-column[
+As with other problems - big data graphs are like HPC graphs, but more so.
+
+Very sparse, very irregular: nodes can have enormously varying degrees, _e.g._ social graphs
+
+.center[<img src="assets/img/social-graph.png" width=75%></img>]
+https://en.wikipedia.org/wiki/Social_graph
+]
+---
+.left-column[
+## Big Data Problems
+
+### Linear algebra
+
+### Graph problems
+]
+.right-column[
+Generally decomposed in similar ways.
+
+Processing looks very much like neighbour exchange on an unstructured mesh; can
+map unstructured mesh computations onto (very regular) graph problems.
+
+.center[<img src="assets/img/flink-sssp.png" width=75%></img>]
+https://flink.apache.org/news/2015/08/24/introducing-flink-gelly.html
+]
+---
+.left-column[
+## Big Data Problems
+
+### Linear algebra
+
+### Graph problems
+]
+.right-column[
+Calculations on (_e.g._) social graphs are typically very low-compute intensity:
+- Sum 
+- Min/Max/Mean
+
+So that big-data graph computations are often _more_ latency sensitive than 
+more compute-intensive technical computations
+
+&rArr; lots of work done and in progresss to reduce communication/framework overhead
+
+.center[<img src="assets/img/graphx-tables_and_graphs.png" width=75%></img>]
+https://spark.apache.org/docs/1.2.1/graphx-programming-guide.html
+]
+---
+.left-column[
+## Big Data Problems
+
+### Linear algebra
+
+### Graph problems
+
+### Commonalities
+]
+.right-column[
+
+The problems big-data practitioners face are either:
+- The same as in traditional HPC
+- The same as new scientific computing fields
+- Or what data analysis/HPC will be facing towards exascale
+    - Less regular/structured
+    - More dynamic
+]
+---
+## The Present Day, 2017
+<img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
+
+Will argue that they are not so different, and there's a lot to learn (on both sides) across the data science/simulation science divide
+
+* Simulations are getting more complex, dynamic
+
+* Big data problems have long been in-memory, increasingly compute intensive
+
+* Moving towards each other in fits and starts
+
+I tend to place Chapel as a redoubt on the outskirts of traditional HPC terrain, trying to lead the community towards where the action is:
+  - Productive tooling
+
+  - Modern language affordances
+
+  - Making it easier to tackle scale, more complex problems
+---
+layout: false
+class: center, middle, inverse
+## R: https://www.r-project.org
+---
+.left-column[
+## R
+
+### Overview
+]
+.right-column[
+<img src="assets/img/Rlogo.png" width=10% style="float: left;"></img>
+The R foundation considers R &ldquo;an environment within which statistical techniques are implemented.&rdquo;
+
+* A programming language built around statistical analysis and (primarily) interactive use.
+
+* Enormous contributed package library [CRAN](https://mirrors.nics.utk.edu/cran/) (10,700+ packages).
+
+* Lingua Franca of desktop statistical analysis.
+
+* Lovely newish development/interactive use environment, [RStudio](https://www.rstudio.com).
+
+* _Huge_ in biostatistics: [Bioconductor](https://bioconductor.org)
+
+.center[<img src="assets/img/rstudio-projects_new.png" width=40%></img>]
+]
+---
+.left-column[
+## R
+
+### Overview
+
+### Initial History
+]
+.right-column[
+R's popularity was _not_ a given.
+
+* Many extremely established incumbant stats packages, commercial (SPSS, SAS) 
+
+* Referees can always say "I don't trust this new program, what does good old SPSS/SAS say?  (Fear may be more important than actual fact).
+
+* Free, easily extensible, high-quality &mdash; took ages to catch on, but it did.
+
+.center[
+<table width=45%>
+<tbody>
+<tr><td><img src="assets/img/fig_6b_rexersurveyalltools2015.png" width=90%></img></td></tr>
+<tr><td>Figure from <a href="http://r4stats.com/articles/popularity/">http://r4stats.com/articles/popularity/</a></td></tr>
+</tbody>
+]
+
+.center[**Lesson 1: Incumbents _can_ be beaten**.]
+]
+---
+.left-column[
+## R
+
+### Overview
+
+### Initial History
+]
+.right-column[
+R's popularity was _not_ a given.
+
+* Many extremely established incumbant stats packages, commercial (SPSS, SAS) 
+
+* Referees can always say "I don't trust this new program, what does good old SPSS/SAS say?  (Fear may be more important than actual fact).
+
+* Free, easily extensible, high-quality --- took ages to catch on, but it did.
+
+.center[
+<table width=45%>
+<tbody>
+<tr><td><img src="assets/img/Fig_2d_ScholarlyImpact.png" width=90%></img></td></tr>
+<tr><td>Figure from <a href="http://r4stats.com/articles/popularity/">http://r4stats.com/articles/popularity/</a></td></tr>
+</tbody>
+]
+
+.center[**Lesson 2: Growth is slow, until it isn't**.]
+]
+---
+.left-column[
+## R
+
+### Overview
+
+### Initial History
+]
+.right-column[
+A big reason for deciding to use R are the packages that are available
+
+* High-quality, user-contributed packages to solve specific types of problems
+
+* Written to solve authors' problem, helpful to others
+
+.center[**Lesson 3: Users' contributions can be as important for adoption as implementers'**.]
+
+.center[
+<table width=45%>
+<tbody>
+<tr><td><img src="assets/img/cran_growth.png" width=50%></img></td></tr>
+<tr><td>Figure from <a href="http://blog.revolutionanalytics.com/2016/04/cran-package-growth.html">http://blog.revolutionanalytics.com/2016/04/cran-package-growth.html</a></td></tr>
+</tbody>
+]
+]
+---
+.left-column[
+## R
+
+### Overview
+
+### Initial History
+
+### Dataframes
+]
+.right-column[
+The fundamental data structure of R has been(*) the `dataframe`.
+
+* Think spreadsheet
+
+* List of typed columns (1d vectors)
+
+* Can be thought of as 1d array of `record`. 
+
+.center[ <img src="assets/img/dataframes.png" width=70%></img> ]
+]
+---
+.left-column[
+## R
+
+### Overview
+
+### Initial History
+
+### Dataframes
+]
+.right-column[
+The fundamental data structure of R has been(*) the `dataframe`.
+
+* Think spreadsheet
+
+* List of typed columns (1d vectors)
+
+* Can be easily thought of as 1d array of `record`. 
+
+* Easily distributed over multiple machines!
+
+.center[ <img src="assets/img/dataframes-distributed.png" width=70%></img> ]
+]
+---
+.left-column[
+## R
+
+### Overview
+
+### Initial History
+
+### Dataframes
+
+### HPC R
+]
+.right-column[
+The fundamental data structure of R has been the `dataframe`.
+
+* Easily distributed over multiple machines!
+
+One might reasonably expect that there thus would be a thriving 
+ecosystem of parallel/big data tools for R.  There's _some_
+truth to that (_e.g._ [CRAN HPC Task view](https://cran.r-project.org/web/views/HighPerformanceComputing.html)):
+
+.center[ <img src="assets/img/HPC-CRAN.png" width=70%></img> ]
+]
+---
+.left-column[
+## R
+
+### Overview
+
+### Initial History
+
+### Dataframes
+
+### HPC R
+]
+.right-column[
+But a large number of packages isn't necessarily a sign of vibrancy
+
+* Can be wheel reinvention factory
+
+R has several (solid, well made) parallel packages: snow, multicore (now both in core),
+foreach.  
+* But they don't work together
+* And don't implement any higher-order algorithms.
+
+Also has several excellent packages that make use of parallelism:
+* Caret (various data mining algorithms)
+* BiocParallel (for Bioconductor packages)
+
+But these represent a _lot_ of work by people; hard to get from one side to the other.
+
+SparkR allows you to run R code through Spark, but impedence mismatch between paradigms.
+
+.center[<img src="assets/img/chasm_of_despair.png" width=70%></img>]
+]
+---
+.left-column[
+## R
+
+### Overview
+
+### Initial History
+
+### Dataframes
+
+### HPC R
+]
+.right-column[
+If your parallelism isn't very easily expressed, and a higher-level
+package for solving your problems doesn't already exist, you have
+to parallelize your algorithms from very basic pieces
+
+* But scientists don't want to write parallel code
+* They just want to solve their problems!
+
+.center[**Lesson 4: Decompositions aren't enough &mdash; need rich, composable, parallel tools**.]
+
+.center[<img src="assets/img/chasm_of_despair.png" width=70%></img>]
+]
+---
+.left-column[
+## R
+
+### Overview
+
+### Initial History
+
+### Dataframes
+
+### HPC R
+
+### Datatables
+
+### Pros/Cons
+]
+.right-column[
+
+Focused entirely on statistical computing (pro or con)
+
+**Cons**
+
+* Hit-or-miss support for parallel computations
+* Purely interpreted; pure R is slow
+
+**Pros**
+
+* Widespread adoption
+* Enormous package support (many written in C++)
+* Close to dominant on the desktop (with Python/Pandas nipping at heels)
+]
+---
+layout: false
+class: center, middle, inverse
+
+## Spark: http://spark.apache.com
+---
+.left-column[
+## Spark
+
+### Overview
+]
+.right-column[
+Hadoop came out in ~2006 with MapReduce as a computational engine, which wasn't that useful for scientific computation.
+
+* One pass through data
+* Going back to disk every iteration
+
+However, the ecosystem flourished, particularly around the Hadoop file system (HDFS) and new databases
+and processing packages that grew up around it.
+
+.center[<img src="assets/img/mapreduce.png" height=350px></img>]
+]
+---
+.left-column[
+## Spark
+
+### Overview
+]
+.right-column[
+Spark (2012) is in some ways "post-Hadoop"; it can happily
+interact with the Hadoop stack but doesn't require it.
+
+Built around concept of in-memory resilient distributed datasets
+
+* Tables of rows, distributed across the job, normally in-memory
+* Immutable
+* Restricted to certain transformations 
+
+Used for database, machine learning (linear algebra, graph, tree methods), _etc._
+
+.center[<img src="assets/img/spark-rdd.png" width=50%></img>]
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+]
+.right-column[
+<img src="assets/img/logistic-regression.png" width=33% style="float: right;"></img>
+Being in-memory was a huge performance win over Hadoop MapReduce
+for multiple passes through data.
+
+Spark immediately began supplanting MapReduce for complex calculations.
+
+.center[**Lesson 6: Performance is crucial!**]
+]
+--
+.right-column-cont[
+.center[**...To a point**.]
+
+In 2012, either would have been much faster in MPI or a number of HPC frameworks.
+* No multicore
+* Generic sockets for communications
+* No GPUs
+* JVM: Garbage collection jitter, pausses
+
+But development time, lack of fault tolerance, no integration into ecosystem (HDFS, HBase..)
+mean that not even considered.
+
+Don't have to be faster than _everything_.
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+]
+.right-column[
+Project Tungsten (2015) was an extensive rewriting of core Spark for performance.
+* Get rid of JVM memory management, handle it themselves (FORTRAN77 workspace arrays!)
+* Vastly improved cache performance
+* Code generation (more later)
+
+In 2016, built-in GPU support.
+
+.center[**Lesson 8: There will _always_ be pending performance improvements.  They're important, but not show-stoppers**.]
+]
+--
+.right-column-cont[
+.center[**Lesson 9: Big Data frameworks are learning HPC lessons faster than HPC stacks are learning Big Data lessons**.]
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+
+### RDDs
+]
+.right-column[
+Operations on Spark RDDs can be:
+* Transformations, like map, filter, reduce, join, groupBy...
+* Actions like collect, foreach, ..
+
+You build a Spark computation by chaining together transformations;
+but no data starts moving until part of the computation is materialized
+with an action.
+
+<img src="assets/img/spark-rdd.png" width=75%></img>
+]
+---
+layout: false
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+
+### RDDs
+]
+.right-column[
+Spark RDDs prove to be a very powerful abstraction.
+
+Key-Value RDDs are a special case - a pair of values, first is key, second is value associated with.
+
+Linda tuple spaces, which underly Gaussian.
+
+Can easily use join, _etc._ to bring all values associated with a key together:
+  - Like all stencil terms that are contribute at a particular grid point
+  
+.center[<img src="assets/img/spark-rdds-diffusion.png" width=55%></img>]
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+
+### RDDs
+
+### Dataframes
+]
+.right-column[
+But RDDs are also building blocks.
+
+Spark Dataframes are lists of columns, like pandas or R data frames.
+
+Can use SQL-like queries to perform calculations.  But this allows bringing the entire mature machinery of SQL query optimizers to bear, allowing further automated optimization of data movement, and computation.
+
+(Spark Notebook 2)
+<img src="assets/img/spark-dataframes.png" width=75%></img>
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+
+### RDDs
+
+### Dataframes
+
+### Graphs
+]
+.right-column[
+Graph library &mdash; [GraphX](http://spark.apache.org/graphx/) &mdash; has also been implemented on top of RDDs.
+
+Many interesting features, but for us: [Pregel](http://blog.acolyer.org/2015/05/26/pregel-a-system-for-large-scale-graph-processing/)-like algorithms on graphs.
+
+Nodes passes messages to their neighbours along edges.
+<img src="assets/img/graphx.png" width=75%></img>
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+
+### RDDs
+
+### Dataframes
+
+### Graphs
+]
+.right-column[
+This makes implementing unstructured mesh methods extremely straightforward (Spark notebook 4):
+
+```scala
+def step(g:Graph[nodetype, edgetype]) : Graph[nodetype, edgetype] = {
+    val terms = g.aggregateMessages[msgtype](
+        // Map
+        triplet => { 
+            triplet.sendToSrc(src_msg(triplet.attr, triplet.srcAttr, triplet.dstAttr))
+            triplet.sendToDst(dest_msg(triplet.attr, triplet.srcAttr, triplet.dstAttr))
+          },
+        // Reduce
+        (a, b) => (a._1, a._2, a._3 + b._3, a._4 + b._4, a._5 + b._5, a._6 + b._6, a._7 + b._7)
+    )
+    
+    val new_nodes = terms.mapValues((id, attr) => apply_update(id, attr))
+    
+    return Graph(new_nodes, graph.edges)
+}
+```
+
+.center[<img src="assets/img/graphx-init.png" width=33%></img> <img src="assets/img/graphx-final.png" width=33%></img>]
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+
+### RDDs
+
+### Dataframes
+
+### Graphs
+]
+.right-column[
+
+All of these features - key-value RDDs, Dataframes, (now Datasets), and graphs, are built upon the basic RDD plus the fundamental transformations.
+
+.center[**Lesson 4b: The right abstractions &mdash; decompositions with enough primitive operations to act on them &mdash; can be enough to build an ecosystem on**]
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+
+### RDDs
+
+### Dataframes
+
+### Graphs
+
+### Execution graphs
+]
+.right-column[
+Delayed computation + view of entire algorithm allows optimizations over the entire computation graph.
+
+So for instance here, nothing starts happening in earnest until the `plot_data()` (Spark notebook 1)
+
+```python
+    # Main loop: For each iteration,
+    #  - calculate terms in the next step
+    #  - and sum
+    for step in range(nsteps):
+        data = data.flatMap(stencil) \
+                    .reduceByKey(lambda x, y:x+y)
+            
+    # Plot final results in black
+    plot_data(data, usecolor='black')
+```
+
+Knowledge of lineage of every shard of data also means recomputation is straightforward in case
+of node failure
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+
+### RDDs
+
+### Dataframes
+
+### Graphs
+
+### Execution graphs
+
+### Adoption in Science
+]
+.right-column[
+Adoption has been enormous _broadly_:
+
+.center[<img src="assets/img/spark-interest.png" width=75%></img>]
+.center[Google Search]
+.center[<img src="assets/img/stack-overflow-qs.png" width=75%></img>]
+.center[Questions on Stack Overflow]
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+
+### RDDs
+
+### Dataframes
+
+### Graphs
+
+### Execution graphs
+
+### Adoption in Science
+]
+.right-column[
+But comparatively little uptake in science yet - even though it seems like it would be right at home in large-scale genomics:
+- Graph problems
+- Large statistical analyses
+
+(GATK is a bit of a special case - more research infrastructure than a research tool per se)
+]
+--
+.right-column-cont[
+My claim is that its heavyweight nature is an awkward fit for scientist patterns of work
+- Noodle around on laptop
+- Develop methods, gain confidence on smaller data sets
+- Scale up over time
+
+Who spends months developing a method, tries it for the first time on 100TB of data, only to discover the
+approach is doomed to failure?
+
+.center[**Lesson 10: For science, scale _down_ may be as important as scale up**]
+]
+---
+.left-column[
+## Spark
+
+### Overview
+
+### Performance
+
+### RDDs
+
+### Dataframes
+
+### Graphs
+
+### Execution graphs
+
+### Adoption
+
+### Pros/Cons
+]
+.right-column[
+
+**Cons**
+
+* JVM Based (Scala) means C interoperability always fraught.
+* Not much support for high-performance interconnects (although that's coming from third parties - [HiBD group at OSU](http://hibd.cse.ohio-state.edu))
+* Very little explicit support for multicore yet, which leaves much performance on the ground.
+* Doesn't scale _down_ very well; very heavyweight
+
+**Pros**
+
+* Very rapidly growing
+* Performance improvements version to version
+* Easy to find people willing to learn
+]
+---
+class: center, middle, inverse
+count: false
+## Dask: http://dask.pydata.org/
+---
+.left-column[
+## Dask
+
+### Overview
+]
+.right-column[
+Dask is a python parallel computing package
+
+* Very new - 2015
+* As small as possible
+* Scales down very nicely
+* Adoption extremely fast
+]
+--
+.right-column-cont[
+* Works very nicely with NumPy, Pandas, Scikit-Learn
+* Is definitely nibbling into HPC &ldquo;market share&rdquo;
+    * For traditional numerical computing on few nodes
+    * For less regular data analysis/machine learning on larger scale
+    * (likely siphoning off a little uptake of Spark, too)
+
+Used for very general data analysis (linear algebra, trees, tables, stats, graphs...) and
+machine learning
+
+.center[**Lesson 11: Library support vital**]
+]
+---
+.left-column[
+## Dask
+
+### Overview
+
+### Task Graphs
+]
+.right-column[
+Allows manual creation of quite general parallel computing data
+flows (making it a great way to prototype parallel numerical
+algorithms):
+
+```python
+from dask import delayed, value
+
+@delayed
+def increment(x, inc=1):
+    return x + inc
+
+@delayed
+def decrement(x, dec=1):
+    return x - dec
+
+@delayed
+def multiply(x, factor):
+    return x*factor
+
+w = increment(1)
+x = decrement(5)
+y = multiply(w, x)
+z = increment(y, 3)
+
+from dask.dot import dot_graph
+dot_graph(z.dask)
+
+z.compute()
+```
+<img src="assets/img/dask-simplegraph.png" style="position: fixed; height: 500px; top: 150px; right: 100px"></img>
+]
+---
+.left-column[
+## Dask
+
+### Overview
+
+### Task Graphs
+]
+.right-column[
+Once the graph is constructed, computing means scheduling either across threads, processes, or nodes
+
+* Redundant tasks (recomputation) pruned 
+* Intermediate tasks discarded after use
+* Memory use kept low
+* If guesses wrong, task dies, scheduler retries
+    * Fault tolerance
+
+.center[<img src="assets/img/dask-collections-schedulers.png" width=75%></img>]
+.center[http://dask.pydata.org/en/latest/index.html]
+]
+---
+.left-column[
+## Dask
+
+### Overview
+
+### Task Graphs
+
+### Dask Arrays
+]
+.right-column[
+Array support also includes a small but growing number of linear algebra routines
+
+Dask allows out-of-core computation on arrays (or dataframes, or bags of objects): will be increasingly important in NVM era
+
+* Graph scheduler automatically pulls only chunks necessary for any task into memory
+* New: intermediate results can be spilled to disk
+
+```python
+file = h5py.File(hdf_filename,'r')
+mtx = da.from_array(file['/M'], chunks=(1000, 1000))
+u, s, v = da.linalg.svd(mtx)
+u.compute()
+```
+
+.center[**Lesson 12: With NVMe, out-of-core is coming back, and some packages are already thinking about it**]
+]
+---
+.left-column[
+## Dask
+
+### Overview
+
+### Task Graphs
+
+### Dask Arrays
+]
+.right-column[
+Arrays have support for guardcells, which make certain sorts of calculations
+trivial to parallelize (but lots of copying right now):
+
+(From dask notebook)
+```python
+subdomain_init = da.from_array(dens_init, chunks=((npts+1)//2, (npts+1)//2))
+
+def dask_step(subdomain, nguard=2):
+    # `advect` is just operator on a numpy array
+    return subdomain.map_overlap(advect, depth=nguard, boundary='periodic')
+
+with ResourceProfiler(0.5) as rprof, Profiler() as prof:
+    subdomain = subdomain_init
+    nsteps = 100
+    for step in range(0, nsteps//2):
+        subdomain = dask_step(subdomain)
+    subdomain = subdomain.compute(num_workers=2, get=mp_get)
+```
+<img src="assets/img/dask-advection.png" width=75%></img>
+]
+---
+.left-column[
+## Dask
+
+### Overview
+
+### Task Graphs
+
+### Dask Arrays
+
+### Diagnostics
+]
+.right-column[
+Comes with several very useful performance profiling tools which 
+will be instantly famiilar to HPC community members
+
+<img src="assets/img/dask-timeline-zoom.png" width=75%></img>
+]
+---
+.left-column[
+## Dask
+
+### Overview
+
+### Task Graphs
+
+### Dask Arrays
+
+### Diagnostics
+
+### Pros/Cons
+]
+.right-column[
+Not going to be a killer platform for solving PDEs just yet
+- I claim this is because you can't hint strongly enough to scheduler yet about data placement
+
+Could easily be of interest in very near term for large-scale biostatistical data analysis (scikit-learn).
+
+Out-of-core analysis makes scale down even more interesting.
+
+Nothing really there for graph problems, but it's not impossible in the medium term.
+]
+---
+.left-column[
+## Dask
+
+### Overview
+
+### Task Graphs
+
+### Dask Arrays
+
+### Diagnostics
+
+### Pros/Cons
+]
+.right-column[
+**Cons**
+
+* Performance: Aimed at analysis tasks (big, more loosely coupled) rather than simulation
+    * Scheduler+TCP: 200&nbsp;&mu;s per-task overhead, orders of magnitude larger than an MPI message
+    * Single scheduler processes
+    * Not intended as replacement in general for large-scale tightly-coupled computing
+
+**Pros**
+
+* Trivial to install, start using
+* Outstanding for prototyping parallel algorithms
+* Out-of-core support baked in
+* With Numba+Numpy, reasonable single-core performance (~factor of 2 of Chapel)
+* Automatically overlaps communication with computation: 200&nbsp;&mu;s might not be so bad for some methods
+* Scheduler, communications all in pure python right now, rapidly evolving:
+    * **Much** scope for speedup
+]
+---
+class: center, middle, inverse
+count: false
+## TensorFlow: http://tensorflow.org
+---
+.left-column[
+## TensorFlow
+
+### Overview
+]
+.right-column[
+<img src="assets/img/tensors_flowing.gif" width=33% style="float: right;"></img>
+TensorFlow is an open-source dataflow for numerical computation with dataflow graphs, where the data is always in the form of 
+&ldquo;tensors&rdquo; (n-d arrays).
+
+Very new: Released November 2015
+
+From Google, who uses it for deep learning and othe rmachine learning tasks.
+
+Lots of BLAS operations and function evaluations but also general
+numpy-type operations, can use GPUs or CPUs.
+
+Deep learning: largely (but not exclusively) about breaking data (training set) into large chunks,
+performing calculations, and updating each other with updates from those calculations synchronously
+or asynchronously.
+
+.center[**Lesson 13: Parts of &ldquo;big data&rdquo; are getting very close to traditional HPC problems**.]
+]
+---
+.left-column[
+## TensorFlow
+
+### Overview
+
+### Graphs
+]
+.right-column[
+As an example of how a computation is set up, here is a linear regression example.
+
+TensorFlow notebook 1
+
+<img src="assets/img/tf_regression_code.png" width=110%></img>
+]
+---
+.left-column[
+## TensorFlow
+
+### Overview
+
+### Graphs
+]
+.right-column[
+Linear regression is already built in, and doesn't need to be iterative, but this example is quite general and shows how it works.
+
+Variables are explicitly introduced to the TensorFlow runtime, and a series of transformations on the
+variables are defined.
+
+When the entire flowgraph is set up, the system can be run.
+
+The integration of tensorflow tensors and numpy arrays is very nice.
+
+<img src="assets/img/tf_regression_fit.png" width=80%></img>
+]
+---
+.left-column[
+## TensorFlow
+
+### Overview
+
+### Graphs
+
+### Mandelbrot
+]
+.right-column[
+All sorts of computations on regular arrays can be performed.
+
+Some computations can be split across GPUs, or (eventually) even nodes.
+
+All are multi-threaded.
+
+.center[<img src="assets/img/tf_mandelbrot.png" width=75%>]
+]
+---
+.left-column[
+## TensorFlow
+
+### Overview
+
+### Graphs
+
+### Mandelbrot
+
+### Wave Eqn
+]
+.right-column[
+All sorts of computations on regular arrays can be performed.
+
+Some computations can be split across GPUs, or (eventually) even nodes.
+
+All are multi-threaded.
+
+.center[<img src="assets/img/tf_wave_eqn.png" width=75%>]
+]
+---
+.left-column[
+## TensorFlow
+
+### Overview
+
+### Graphs
+
+### Mandelbrot
+
+### Wave Eqn
+
+### Distributed
+]
+.right-column[
+
+As with laying out the computations, distributing the computations is still 
+quite manual:
+
+```python
+with tf.device("/job:ps/task:0"):
+  weights_1 = tf.Variable(...)
+  biases_1 = tf.Variable(...)
+
+with tf.device("/job:ps/task:1"):
+  weights_2 = tf.Variable(...)
+  biases_2 = tf.Variable(...)
+
+with tf.device("/job:worker/task:7"):
+  input, labels = ...
+  layer_1 = tf.nn.relu(tf.matmul(input, weights_1) + biases_1)
+  logits = tf.nn.relu(tf.matmul(layer_1, weights_2) + biases_2)
+  # ...
+  train_op = ...
+
+with tf.Session("grpc://worker7.example.com:2222") as sess:
+  for _ in range(10000):
+    sess.run(train_op)
+```
+
+Communications is done using [gRPC](http://www.grpc.io), a high-performance
+RPC library based on what Google uses internally.
+]
+---
+.left-column[
+## TensorFlow
+
+### Overview
+
+### Graphs
+
+### Mandelbrot
+
+### Wave Eqn
+
+### Distributed
+
+### Adoption
+]
+.right-column[
+Very rapid adoption, even though targetted very narrowly: deep learning
+
+All threaded number crunching on arrays and communication of results of those
+array calculations
+
+.center[<img src="assets/img/tensorflow-interest.png" width=75%>]
+]
+---
+.left-column[
+## TensorFlow
+
+### Overview
+
+### Graphs
+
+### Mandelbrot
+
+### Wave Eqn
+
+### Distributed
+
+### Adoption
+
+### Pros/Cons
+]
+.right-column[
+
+**Cons**
+
+* N-d arrays only means limited support for, e.g., unstructured meshes, hash tables (bioinformatics)
+* Distribution of work remains limited and manual 
+
+**Pros**
+
+* C++ - interfacing is much simpler than Spark
+* Fast
+* GPU, CPU support, not unreasonable to expect Phi support shortly
+* Can make use of infrastructure for synchronous, asynchronous updates between data-parallel tasks
+* Great for data processing, image processing, or computations on n-d arrays
+]
+---
+.left-column[
+## Common Themes
+
+### Higher-Level Abstractions
+]
+.right-column[
+- Spark: Resilient distributed data set (table), upon which:
+    - Graphs
+    - Dataframes/Datasets
+    - Machine learning algorithms (which require linear algebra)
+    - Mark of a good abstraction is you can build lots atop it!
+- Dask: 
+    - Task Graph
+    - Dataframe, array, bag operations
+- TensorFlow:
+    - Data flow
+    - Certain kinds of &ldquo;Tensor&rdquo; operations
+]
+---
+.left-column[
+## Common Themes
+
+### Higher-Level Abstractions
+
+### Data Flow
+]
+.right-column[
+All of the approaches we've seen implicitly or explicitly constructed dataflow graphs to describe where data needs to move.
+
+Then can build optimization on top of that to improve data flow, movement
+
+These approaches are extremely promising, and already completely usable at scale for some sorts of tasks.
+
+Already starting to attract attention in HPC, e.g. [PaRSEC at ICL](http://icl.utk.edu/parsec/):
+
+<img src="assets/img/parsec-toolchain.png" width=45%></img> <img src="assets/img/parsec-QR.png" width=40%></img>
+]
+---
+class: center, middle, inverse
+count: false
+## Julia: http://julialang.org
+---
+.left-column[
+## Julia
+
+### Overview
+]
+.right-column[
+<img src="assets/img/julia.png" width=15% style="float: left;"></img> is &ldquo;a high-level, high-performance dynamic programming language for numerical computing.&rdquo;
+
+Like Chapel, aims to be productive, performant, parallel.  Targets itself as a matlab-killer.
+
+Most notable features:
+- Dynamic language: JIT, rich types, multiple dispatch
+    - Give a &ldquo;scripting language&rdquo; feel while giving performance closer to C or Fortran
+
+- Lisp-like metaprogramming: Code is Data
+    - With JIT, makes it possible to re-write Julia code on the fly
+    - Makes it possible to write mini-DSLs for particular problem types: [differential equations](https://github.com/JuliaDiffEq/DifferentialEquations.jl), [optimization](https://github.com/JuliaOpt/JuMP.jl)
+
+- Full suite of parallel primitives
+]
+---
+.left-column[
+## Julia
+
+### Overview
+]
+.right-column[
+```
+using PyPlot
+
+# julia set
+function julia(z, c; maxiter=200)
+    for n = 1:maxiter
+        if abs2(z) > 4
+            return n-1
+        end
+        z = z*z + c
+    end
+    return maxiter
+end
+
+jset = [ UInt8(julia(complex(r,i), complex(-.06,.67)))
+             for i=1:-.002:-1, r=-1.5:.002:1.5 ];
+get_cmap("RdGy")
+imshow(jset, cmap="RdGy", extent=[-1.5,1.5,-1,1]
+```
+<img src="assets/img/juliaset_in_julia.png" width=65%></img>
+]
+---
+.left-column[
+## Julia
+
+### Overview
+
+### Single-Core Performance
+]
+.right-column[
+
+Single-core performance is very good, particularly for a JIT.
+
+Test below is for a simple 1-d stencil calculation ( https://www.dursi.ca/post/julia-vs-chapel.html )
+
+<table>
+<th>time</th> <th>Julia</th> <th>Chapel</th> <th>Numpy + Numba</th><th>Numpy</th>
+</thead>
+<tbody style="border: 1px solid black;">
+<tr><td style="border: 1px solid black;">run</td><td style="border: 1px solid black;">0.0084</td><td style="border: 1px solid black;">0.0098 s</td><td style="border: 1px solid black;">0.017 s</td><td style="border: 1px solid black;">0.069 s</td></tr>
+<tr><td style="border: 1px solid black;">compile</td><td style="border: 1px solid black;">0.57 s</td><td style="border: 1px solid black;">4.8s</td><td style="border: 1px solid black;">0.73 s</td><td style="border: 1px solid black;"> - </td></tr>
+</tbody>
+</table>
+
+Julia edges out Chapel... but for this test, look at Python with Numpy and numba, only a factor of two behind.
+
+Single-core performance has been the main focus of Julia, to the exclusion of almost all else - multithreading is still considered experimental.
+]
+---
+.left-column[
+## Julia
+
+### Overview
+
+### Single-Core Performance
+
+### Distributed Data
+]
+.right-column[
+Julia has a DistributedArray module, but it has very large overhead; better suited for merging data once at the end of long purely local computation (processing and then stacking images, etc)
+
+Below is a test for running on 8 cores of a (single) node:
+
+ <table style="border: 1px solid black; margin: 0 auto; border-collapse:collapse;">
+ <tbody style="border: 1px solid black;">
+ <tr> <td style="border: 1px solid black;" colspan=2>Julia </td><td style="border: 1px solid black;" colspan=2>Chapel</td><td>Dask</td> </tr>
+ <tr><td style="border: 1px solid black;"> -p=1</td><td style="border: 1px solid black;">-p=8</td><td style="border: 1px solid black;">-nl=1 tasks=8</td><td style="border: 1px solid black;">-nl=8 tasks=1</td><td style="border: 1px solid black;">workers=8</td></tr>
+ <td style="border: 1px solid black;">177s s</td>
+ <td style="border: 1px solid black;">264 s</td>
+ <td style="border: 1px solid black;">**0.4 s**</td>
+ <td style="border: 1px solid black;">145 s</td>
+ <td style="border: 1px solid black;">193 s</td></tr>
+ </tbody>
+ </table>
+
+.center[**Lesson 14: Hierarchical approach to parallelism matters**.]
+
+Need to be able to easily exploit threading, NUMA locality, cross-node communications...
+
+Julia has good libraries for data analysis, modest support for graph algorithms, but all single-node; very little support for distributed memory computing.
+]
+---
+.left-column[
+## Julia
+
+### Overview
+
+### Single-Core Performance
+
+### Distributed Data
+
+### Pros/Cons
+]
+.right-column[
+**Cons**
+* Very little performant support for distributed memory computing, not clear it is forthcoming
+
+**Pros**
+
+* Single core fast, and on-node fairly fast
+* Very nice interactive use, works with Jupyter or REPL
+* Some excellent libraries
+* Very powerful platform for writing DSLs
+]
+---
+class: center, middle, inverse
+count: false
+## My Benchmark Problems
+---
+.left-column[
+## My Benchmark Problems
+]
+.right-column[
+So where does this leave my &ldquo;curated&rdquo; (read: wildly biased) set of benchmark problems?
+
+In a dystopic world without efforts like Chapel, what would I be using?
+]
+---
+.left-column[
+## My Benchmark Problems
+
+### PDEs
+]
+.right-column[
+Heavy reliance on execution-graph optimizers has a lot of promise for highly dynamic simulations.
+
+But where we are now, big Data frameworks aren't going to come save me from the current state of the art in large-scale PDE frameworks:
+* [Trilinos](https://trilinos.org/capability-areas/meshes-geometry-and-load-balancing/)
+* [BoxLib](https://ccse.lbl.gov/BoxLib/)
+* ...
+
+Amazing efforts, great tools, and the world is much better with
+them that it would be without them.
+
+But huge code bases, very challenging to start with as a user, very
+difficult to make significant changes.
+
+Based on MPI, which you may have heard I have opinions about.
+]
+---
+.left-column[
+## My Benchmark Problems
+
+### PDEs
+
+### Genomics
+]
+.right-column[
+Large genomics today means buying or renting very large (up to 1TB) RAM machines.
+
+I'm starting to think that this reflects a failure of our parallel programming community.
+
+Good news: there's lots of great work algorithmic being done in the genomics community
+- Succinct data structures
+- Approximate streaming methods
+
+But this is work done because of scarsity, and the size of projects being tackled is being limited.
+]
+---
+.left-column[
+## My Benchmark Problems
+
+### PDEs
+
+### Genomics
+]
+.right-column[
+There are projects like [HipMer](http://portal.nersc.gov/project/hipmer/)
+(large-scale assembler, UPC++), but not a general solution.
+
+GraphX for Spark could be useful, but only becomes performant on 
+huge problems
+- &ldquo;Missing Middle&rdquo; for where most of the work is, and for adoption
+]
+---
+.left-column[
+## My Benchmark Problems
+
+### PDEs
+
+### Genomics
+
+### Biostatistics
+]
+.right-column[
+Biostatistics is in exactly the same boat.
+
+R works really, really well for ~desktop-scale problems.
+
+Spark (or a number of other things) work if the data size starts
+large enough.
+- Big international genomics projects 
+
+Death valley in between.
+]
+---
+.left-column[
+## My Benchmark Problems
+
+### PDEs
+
+### Genomics
+
+### Biostatistics
+]
+.right-column[
+<img src="assets/img/hail-vds-rep.png" width=50% style="float:right;"></img>
+
+Here's where we are now - the Broad institute in Boston put together the
+[Hail project](https://www.hail.is/hail/overview.html#variant-dataset-vds):
+* Based on Spark 
+
+* "does person X have genetic variant Y" matrix of records
+
+* Interactively query reductions of rows and columns 
+
+* A big problem is several billion entries.  Future proof, but...
+
+* This is not a hard problem!
+
+* Very unwieldly for individual researchers on smaller sets.
+]
+---
+class: center, middle, inverse
+count: false
+## Chapel
+---
+.left-column[
+## Chapel
+]
+.right-column[
+So what does this mean for Chapel?  Where does it sit in this landscape?
+]
+--
+.right-column-cont[
+Here's my opinion, after casting about for langauges and frameworks for these sorts of problems:
+
+* Chapel is _important_.
+* Chapel is _mature_.
+* Chapel is _just getting started_.
+]
+---
+.left-column[
+## Chapel is...
+
+### Important
+]
+.right-column[
+If the science community is going to have scientific frameworks designed _for_ _our_ _problems_, and not
+bolted on to LinkGoogBook's next big data framework, it's going to come from a project like Chapel.
+]
+--
+.right-column-cont[
+Using MPI as a framework just isn't sustainable for increasingly complex problems.
+]
+--
+.right-column-cont[
+Big data frameworks don't have any incentive to support scale-down, or tightly-coupled computing.
+]
+--
+.right-column-cont[
+Scientists need both.
+]
+---
+.left-column[
+## Chapel is...
+
+### Important
+
+### Mature
+]
+.right-column[
+<img src="assets/img/chapel-proj-math.png" width=66%></img>
+]
+--
+.right-column-cont[
+There are other research projects in this area - productive, performant, parallel computing languages for distributed-memory scientific computing.
+
+But Chapel, especially now with 1.15, is a mature product.
+]
+--
+.right-column-cont[
+It is crossing the barrier of &ldquo;Fast Enough&rdquo; for the problems that map naturally to it.
+
+It has the pieces to start expanding that set of problems.
+]
+---
+.left-column[
+## Chapel
+
+### Important
+
+### Mature
+
+### Just Getting Started
+]
+.right-column[
+Has a very solid base.
+- Native compilation, non-crazy runtime: scales down well.
+- Good single core performance.
+- Strong distributed-memory performance for rectangular dense or sparse arrays.
+- Excellent set of parallel primitives.
+- Useful tools.
+]
+---
+.left-column[
+## Chapel
+
+### Important
+
+### Mature
+
+### Just Getting Started
+]
+.right-column[
+I claim that there's enough of a foundation to start building an ecosystem around.
+- _e.g._, in or close to the Spark regime, not the R regime
+
+But may still have to help users across their own &ldquo;Crevace
+of Discouragement&rdquo;
+- Make it so easy for a scientist to start using Chapel for their
+problems it's too hard to resist.
+
+Existing HPC stack helps with this!
+- Many excellent existing tools
+- That are incredibly difficult to start using
+
+User community can contribute significantly to this.
+]
+---
+.left-column[
+## Chapel
+
+### Important
+
+### Mature
+
+### Just Getting Started
+
+### Large Linear Solves?
+]
+.right-column[
+[PETSc](http://www.mcs.anl.gov/petsc/) is a widely used library for large sparse iterative solves.
+- Excellent and comprehensive library of solvers
+- It is the basis of a significant number of home-made simulation codes
+- It is notoriously hard to start getting running with; nontrivial even for experts to install.
+
+Significant fraction of PETSc functionality is tied up in large CSR matrices of reasonable structure
+partitioned by row, vectors, and solvers built on top.
+
+What would a Chapel API to PETSc look like?
+
+What would a Chapel implementation of some core PETSc solvers look like?
+
+How about [Scalapack](http://www.netlib.org/scalapack/)?
+]
+---
+.left-column[
+## Chapel
+
+### Important
+
+### Mature
+
+### Just Getting Started
+
+### Large Linear Solves?
+
+### Genomics?
+]
+.right-column[
+Graph and string problems in genomics is:
+- Huge: vastly larger than Astrophysics, which is where I come from
+- Badly underserved
+- Competition is threaded or even serial code on a single big memory machine
+    - _e.g._, lots of very nice code using Python dicts
+    - And no numba or numpy equivalent to speed up these sorts of operations
+
+Chapel already has associative, unstructured domains - what do some simple
+genomics tasks look like in Chapel?
+]
+---
+.left-column[
+## Chapel
+
+### Important
+
+### Mature
+
+### Just Getting Started
+
+### Large Linear Solves?
+
+### Genomics?
+
+### Data Science?
+]
+.right-column[
+Still this missing middle problem:
+- Nothing (yet) can span the range of both R and Spark
+- Python is making inroads
+- Parts of the pieces are there:
+    - partitioned arrays of records
+- But would need other things
+    - shuffles, very dynamic resizing
+    - adoption may depend too strongly on libraries; R interop?
+]
+---
+.left-column[
+## Chapel
+
+### Important
+
+### Mature
+
+### Just Getting Started
+
+### Large Linear Solves?
+
+### Genomics?
+
+### Data Science?
+
+### Glorious Age Of Expansion
+]
+.right-column[
+<img src="assets/img/ScientificComputing2017.png" width=50% style="float: right;"></img>
+
+Chapel has established a stronghold on the outskirts of modestly hostile territory.
+
+But there are scientists in neighboring territories who need help.
+
+In almost any direction, there are communities that would love what Chapel offers;
+- Productivity
+- Performance
+- Desktop-to-Cluster scalability.
+
+Future's wide open!
+]
+
+    </textarea>
+    <script src="remark/remark-latest.min.js">
+    </script>
+     <script>
+       var slideshow = remark.create();
+     </script>
+  </body>
+</html>
