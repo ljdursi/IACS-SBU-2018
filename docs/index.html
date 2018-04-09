@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Chapel's Home in the New Landscape of Scientific Frameworks (and what it can learn from the neighbours)</title>
+    <title>Dispatches from the Convergence Coalface: HPC, Big Data, and Large Scale Genomics</title>
     <style>
       @import url(https://fonts.googleapis.com/css?family=Average);
       @import url(https://fonts.googleapis.com/css?family=Oswald);
@@ -68,6 +68,11 @@
         background-repeat: no-repeat;
         background-size: contain;
       }
+
+      .title .remark-slide-number, .inverse .remark-slide-number {
+        visibility: hidden;
+      }
+
       .inverse h1, .inverse h2 {
         color: #f3f3f3;
         line-height: 0.8em;
@@ -144,13 +149,13 @@
     </style>
   </head>
   <body>
-    <textarea id="source">
+<textarea id="source">
 name: title
 layout: true
 class: center, middle, title
 count: false
 ---
-## Dispatches from the Convergence Coalface:
+# Dispatches from the Convergence Coalface:
 ## HPC, Big Data, and Large Scale Genomics
 Jonathan Dursi<br/>
 Senior Research Associate<br/>
@@ -183,14 +188,13 @@ layout: false
 
 - Large-scale high-speed adaptive reactive fluid fluids
 
-- DOE ASCI Center at Chicago
-    - ASCI Red
-    - ASCI Blue
-    - ASCI White
+    - DOE ASCI Center at Chicago
 
 - FORTRAN, MPI, Oct-tree regular adaptive mesh
 
 - Joined HPC centre after postdoc
+
+    - OpenMP, CUDA, C++
 
 - Worked with researchers on wide variety of problems
 ]
@@ -206,12 +210,12 @@ layout: false
 Started my career (c1995-2005) when large scale scientific computing was:
 
 * ~20 years of stability
-* Bunch of x86, MPI, ethernet or infiniband
-* No one outside of academia was much doing big number/data crunching
-* Pretty stable set of problems
 
-Now found myself thrust into the most exciting time in scientific computing
-maybe ever.
+* Bunch of x86, MPI, ethernet or infiniband
+
+* No one outside of academia was much doing big number/data crunching
+
+* Pretty stable set of problems
 ]
 ---
 ## Ye Olde Entire Scientific Computing Worlde, c. 2002
@@ -227,7 +231,6 @@ It was a simpler time:
 
 * Physical scientists working with Big Iron or workstations, performing simulation or analysis of comparitively regular data sets
     - FORTRAN/C/C++(?) + MPI + OpenMP
-    - FORTRAN/C/C++(?)
     - MATLAB, IDL
     - Python (Numeric)
 
@@ -249,89 +252,8 @@ Widespread adption of computing and networking brought *data*, and lot of it.
     - Success of Human Genome Project in 2003 
     - High-throughput sequencing technologies becoming available
     - Lots and lots of data - but how to process it?
----
-## The Present Day, 2017
-.center[<img src="assets/img/ScientificComputing2017.png" width=75%></img>]
----
-## The Present Day, 2017
-<img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
-
-* The newcomers started with some of their own tools (Hadoop, HDFS)
-
-* (Some of) the data-analysis handling communities jumped at the chance to start working with the data-intensive newcomers
-    - Similar needs, interests
-    - Python on the general computing and physical sciences side
-    - R on the statistics/Machine Learning (neé data mining) side
-
-* The simulation science communities, which makes up most of traditional HPC, were more skeptical
-    - Needs seemed very different
-    - Very different terminology
-    - Initial tools (Hadoop Map-Reduce) were all out of core, calculations very simple (analytics)
-    - Still not a lot of overlap
----
----
-.left-column[
-  ## Who Am I?
-
-  ### Old HPC Hand...
-
-  ### Living in Exciting Times..
-]
-.right-column[
-## New Communities Make things Exciting!
-<img src="assets/img/new-communities.png" style="float: right;" width=50%>
-
-* Internet-scale companies (Yahoo!, Google)
-  * Very large-scale image processing
-  * Machine learning:
-    * Sparse linear algebra
-    * k-d trees
-    * Calculations on unstructured meshes (graphs)
-    * Numerical optimization
-* Genomics
-  * Lots of data
-  * Lots of analysis challenges
-    * Large graphs for assembly, analysis
-    * Large tables for statistics
-* Building new frameworks
-
-]
----
-.left-column[
-  ## Who Am I?
-
-  ### Old HPC Hand...
-
-  ### Living in Exciting Times...
-]
-.right-column[
-## New Hardware Makes things Exciting!
-<img src="assets/img/fpga.png" style="float: right;" width=50%>
-
-* Now:
-  * Large numbers of cores per socket
-  * GPUs/Phis
-* Next few years:
-  * FPGA (Intel: Broadwell + Arria 10, shipping 2017)
-  * Non-volatile Memory (external memory/out-of-core algorithms)
-]
----
-.left-column[
-  ## Who Am I?
-
-  ### Old HPC Hand...
-
-  ### Living in Exciting Times...
-]
-.right-column[
-## Richer Scientific Problems Make things Exciting!
-
-* New science demands: cutting edge models are more complex.  An Astro example:
-    * 80s - gravity only N-body, galaxy-scale
-    * 90s - N-body, cosmological
-    * 00s - Hydrodynamics, cosmological
-    * 10s - Hydrodynamics + rad transport + cosmological
-]    
+    - Arrived after traditional HPC was quite mature, optimized for its problems.
+    - &ldquo;Big Data&rdquo; was just starting to develop tools, technique
 ---
 name: my-background-2
 layout: false
@@ -376,173 +298,68 @@ layout: false
 ]
 .right-column[
 In the meantime, one of the de-facto standards for genome analysis, GATK, 
-has just announced that version 4 will support distributed cluster computing &mdash; 
+has just announced that version 4 will support distributed-memory cluster computing &mdash; 
 using Apache Spark.
 
 .center[<img src="assets/img/gatk-spark-news.png" width=75%></img>]
 ]
 ---
+## The Present Day, 2018
+.center[<img src="assets/img/ScientificComputing2017.png" width=75%></img>]
+---
+## Genomics is starting to form a bridge between the two solitudes
+<img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
+
+* Data, not simulation, intensive
+    - Truly large amounts of data
+    - Irregular data lookups: complex graphs, indices
+    - Looks more like NoSQL databases, social networks than PDEs on regular grids
+
+* But fundamentally science
+    - Extremely subtle analyses
+    - Asking questions that haven't been asked before
+    - Testing, discovery of methods, means scale down vital
+---
+## Genomics is starting to form a bridge between the two solitudes
+<img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
+
+* Genomics moving much faster than HPC, somewhat faster than Big Data in building the bridge
+
+    - Immediate needs
+
+    - HPC: "convergence" around exascale
+        - no impact on current practice
+        - even less impact on complex workflows
+
+    - Big Data: re-learning HPC lessons as needed
+        - Individual projects adopt either better single-node performance or distribute memory performance
+        - genomics needs both
+---
 layout: false
 .left-column[
   ## Outline
 ]
 .right-column[
-- A survey of the evolving landscape of Big Computing frameworks
+* Why HPC/Big Data convergence is inevitible
+    - HPC: Decreasing regularity at scale
+    - Big Data: Increasing performance needs
 
-- A tour of some common big-data computing problems
-    - Genomics and otherwise
-    - Not so different from complex simulations
+* Genomics as a driver
+    - Data volumes
+    - Data types
+    - Immediate needs
 
-- A tour of programming models to tackle them, and lessons we can learn
-    - R
-    - Spark
-    - Dask
-    - Distributed TensorFlow
-    - Coarray Fortran
-    - Julia
-    - Rust, Swift
+* A tour of increasingly hybrid genomics projects
+    - Pan-Cancer Analysis of Whole Genomes
+    - Nanopore sequencing
+    - CanDIG (http://www.distributedgenomics.ca)
 
-- Where Chapel is, and what nearby territories look fertile
-]
----
-.left-column[
-  ## Outline
-  
-  ### With problems in mind:
-
-  ### Grid PDES
-]
-.right-column[
-My perspective is based on the sorts of problems I've worked on.
-
-Will have those in mind when looking at languages and techniques.
-
-Started with high-speed reactive fluid flows, either fixed grid (structured or unstructured)
-or block-structured adaptive:
-
-.center[<img src="assets/img/amr.png" width=90%></img>]
-]
----
-.left-column[
-  ## Outline
-  
-  ### With problems in mind:
-
-  ### Grid PDEs
-
-  ### Substring operations 
-]
-.right-column[
-(Much) more recently, working with genomics sequence data. 
-
-Assembly:
-- Have small fragments of sequence, must generate whole 
-- Graph methods (de Bruijn or overlap graph)
-- Find maximal unambiguous paths through the graph
-
-<table width=65%>
-<tbody>
-<tr><td><img src="assets/img/debruijn-graph.jpg" width=90%></img></td></tr>
-<tr><td>Figure from <a href="http://www.nature.com/nrg/journal/v14/n5/full/nrg3433.html">Nature Review Genetics</a></td></tr>
-</tbody>
-
-Or may have an assembled graph genome and try to find best match for
-given observed subsequence
-
-Or just count observed subsequences
-
-]
----
-.left-column[
-  ## Outline
-  
-  ### With problems in mind:
-
-  ### Grid PDEs
-
-  ### Substring operations 
-
-  ### Large statistical analyses
-]
-.right-column[
-Or just large biostatistical analyses:
-
-Closest to my current day job (distributed analysis of private genomics data sets)
-
-Imagine RNA sequence expression data:
-- 100m fragments of sequence (imperfect sampling)
-- Assigned to particular RNA transcripts
-- Find out if transcripts are differentially expressed between case and condition
-
-Now do that for multiple tissue types, large population...
-
-And start correlating with other information (DNA variants, clinical data, phenotypic data,...)
-
-<table width=45%>
-<tbody>
-<tr><td><img src="assets/img/rnaseq.png" width=90%></img></td></tr>
-<tr><td>Figure from <a href="http://www.nature.com/nbt/journal/v32/n9/full/nbt.2931.html">Nature</a></td></tr>
-</tbody>
+* Near-term large-scale genomics futures
 ]
 ---
 layout: false
 class: center, middle, inverse
-## The Lay Of The Land: 2002, 2007, and 2017
----
-## Ye Olde Entire Scientific Computing Worlde, c. 2002
-.center[<img src="assets/img/ScientificComputing2002.png" width=75%></img>]
-(map from http://mewo2.com/notes/terrain/)
----
-## Ye Olde Entire Scientific Computing Worlde, c. 2002
-<img src="assets/img/ScientificComputing2002.png" width=33% style="float: right;"></img>
-
-It was a simpler time:
-* Statistial Computing largely the domain of the social sciences, some experimental sciences
-    - R was beginning to be quite popular
-
-* Physical scientists working with Big Iron or workstations, performing simulation or analysis of comparitively regular data sets
-    - FORTRAN/C/C++(?) + MPI + OpenMP
-    - FORTRAN/C/C++(?)
-    - MATLAB, IDL
-    - Python (Numeric)
-
-* Not a lot of SQL/database work in traditional technical computing, but communications up and downstream w/ statistical computing
-
-* Maybe infrequent ferry service between statistical computing and MATLAB communities
----
-## And Then They Came, c. 2007
-.center[<img src="assets/img/ScientificComputing2007.png" width=75%></img>]
----
-## And Then They Came, c. 2007
-.center[<img src="assets/img/ScientificComputing2007.png" width=33% style="float: right;"></img>]
-
-Widespread adption of computing and networking brought *data*, and lot of it.
-* "Internet-scale" companies were the first businesses to try taking advantage of all their data, but others soon followed
-    - Hadoop, HDFS spawned an entire ecosystem
-
-* In the sciences, genomics was in the right place at right time
-    - Success of Human Genome Project in 2003 
-    - High-throughput sequencing technologies becoming available
-    - Lots and lots of data - but how to process it?
----
-## The Present Day, 2017
-.center[<img src="assets/img/ScientificComputing2017.png" width=75%></img>]
----
-## The Present Day, 2017
-<img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
-
-* The newcomers started with some of their own tools (Hadoop, HDFS)
-
-* (Some of) the data-analysis handling communities jumped at the chance to start working with the data-intensive newcomers
-    - Similar needs, interests
-    - Python on the general computing and physical sciences side
-    - R on the statistics/Machine Learning (neé data mining) side
-
-* The simulation science communities, which makes up most of traditional HPC, were more skeptical
-    - Needs seemed very different
-    - Very different terminology
-    - Initial tools (Hadoop Map-Reduce) were all out of core, calculations very simple (analytics)
-    - Still not a lot of overlap
+## HPC / Big Data Convergence
 ---
 ## The Present Day, 2017
 <img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
@@ -640,41 +457,143 @@ https://spark.apache.org/docs/1.2.1/graphx-programming-guide.html
 ]
 ---
 .left-column[
-## Big Data Problems
+## Convergence
 
-### Linear algebra
-
-### Graph problems
-
-### Commonalities
+### HPC Side
 ]
 .right-column[
-
 The problems big-data practitioners face are either:
-- The same as in traditional HPC
-- The same as new scientific computing fields
-- Or what data analysis/HPC will be facing towards exascale
+
+* The same as in traditional HPC
+* The same as new scientific computing fields
+* Or what data analysis/HPC will be facing towards exascale
     - Less regular/structured
     - More dynamic
 ]
+--
+.right-column-cont[
+* This is starting to be recognized in HPC, much talk of "HPC/HPDA convergence"
+]
+--
+.right-column-cont[
+Output of these discussions is primarily whitepapers and vendor press releases.
+
+.center[<img src="assets/img/hpc-convergence.png" width=75%></img>]
+]
 ---
-## The Present Day, 2017
-<img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
+.left-column[
+## Convergence
 
-Will argue that they are not so different, and there's a lot to learn (on both sides) across the data science/simulation science divide
+### Big Data Side
+]
+.right-column[
+The Big Data community thinks in terms of improving performance, not really in terms of "converging" with anything else.
+]
+--
+.right-column-cont[
+To the extent that Big Data thinks of HPC at all, not as a source of inspiration or innovation.
 
-* Simulations are getting more complex, dynamic
+.center[<img src="assets/img/hpc-doesnt-care-what-you-think.png" width=100%></img>]
 
-* Big data problems have long been in-memory, increasingly compute intensive
+[Slide from [talk](https://www.slideshare.net/DataScienceAssociati/using-ai-to-tackle-the-future-of-health-care-data) by Brian Dolan, Deep6 AI]
+]
+---
+layout: false
+class: center, middle, inverse
+## Genomics
+---
+.left-column[
+  ## Outline
+  
+  ### With problems in mind:
 
-* Moving towards each other in fits and starts
+  ### Grid PDEs
 
-I tend to place Chapel as a redoubt on the outskirts of traditional HPC terrain, trying to lead the community towards where the action is:
-  - Productive tooling
+  ### Substring operations 
+]
+.right-column[
+(Much) more recently, working with genomics sequence data. 
 
-  - Modern language affordances
+Assembly:
+- Have small fragments of sequence, must generate whole 
+- Graph methods (de Bruijn or overlap graph)
+- Find maximal unambiguous paths through the graph
 
-  - Making it easier to tackle scale, more complex problems
+<table width=65%>
+<tbody>
+<tr><td><img src="assets/img/debruijn-graph.jpg" width=90%></img></td></tr>
+<tr><td>Figure from <a href="http://www.nature.com/nrg/journal/v14/n5/full/nrg3433.html">Nature Review Genetics</a></td></tr>
+</tbody>
+
+Or may have an assembled graph genome and try to find best match for
+given observed subsequence
+
+---
+layout: false
+class: center, middle, inverse
+## Genomics
+---
+.left-column[
+  ## Outline
+  
+  ### With problems in mind:
+
+  ### Grid PDEs
+
+  ### Substring operations 
+]
+.right-column[
+(Much) more recently, working with genomics sequence data. 
+
+Assembly:
+- Have small fragments of sequence, must generate whole 
+- Graph methods (de Bruijn or overlap graph)
+- Find maximal unambiguous paths through the graph
+
+<table width=65%>
+<tbody>
+<tr><td><img src="assets/img/debruijn-graph.jpg" width=90%></img></td></tr>
+<tr><td>Figure from <a href="http://www.nature.com/nrg/journal/v14/n5/full/nrg3433.html">Nature Review Genetics</a></td></tr>
+</tbody>
+
+Or may have an assembled graph genome and try to find best match for
+given observed subsequence
+
+Or just count observed subsequences
+
+]
+---
+.left-column[
+  ## Outline
+  
+  ### With problems in mind:
+
+  ### Grid PDEs
+
+  ### Substring operations 
+
+  ### Large statistical analyses
+]
+.right-column[
+Or just large biostatistical analyses:
+
+Closest to my current day job (distributed analysis of private genomics data sets)
+
+Imagine RNA sequence expression data:
+- 100m fragments of sequence (imperfect sampling)
+- Assigned to particular RNA transcripts
+- Find out if transcripts are differentially expressed between case and condition
+
+Now do that for multiple tissue types, large population...
+
+And start correlating with other information (DNA variants, clinical data, phenotypic data,...)
+
+<table width=45%>
+<tbody>
+<tr><td><img src="assets/img/rnaseq.png" width=90%></img></td></tr>
+<tr><td>Figure from <a href="http://www.nature.com/nbt/journal/v32/n9/full/nbt.2931.html">Nature</a></td></tr>
+</tbody>
+]
 ---
 layout: false
 class: center, middle, inverse
@@ -2028,223 +1947,6 @@ Here's where we are now - the Broad institute in Boston put together the
 * Very unwieldly for individual researchers on smaller sets.
 ]
 ---
-class: center, middle, inverse
-count: false
-## Chapel
----
-.left-column[
-## Chapel
-]
-.right-column[
-So what does this mean for Chapel?  Where does it sit in this landscape?
-]
---
-.right-column-cont[
-Here's my opinion, after casting about for langauges and frameworks for these sorts of problems:
-
-* Chapel is _important_.
-* Chapel is _mature_.
-* Chapel is _just getting started_.
-]
----
-.left-column[
-## Chapel is...
-
-### Important
-]
-.right-column[
-If the science community is going to have scientific frameworks designed _for_ _our_ _problems_, and not
-bolted on to LinkGoogBook's next big data framework, it's going to come from a project like Chapel.
-]
---
-.right-column-cont[
-Using MPI as a framework just isn't sustainable for increasingly complex problems.
-]
---
-.right-column-cont[
-Big data frameworks don't have any incentive to support scale-down, or tightly-coupled computing.
-]
---
-.right-column-cont[
-Scientists need both.
-]
----
-.left-column[
-## Chapel is...
-
-### Important
-
-### Mature
-]
-.right-column[
-<img src="assets/img/chapel-proj-math.png" width=66%></img>
-]
---
-.right-column-cont[
-There are other research projects in this area - productive, performant, parallel computing languages for distributed-memory scientific computing.
-
-But Chapel, especially now with 1.15, is a mature product.
-]
---
-.right-column-cont[
-It is crossing the barrier of &ldquo;Fast Enough&rdquo; for the problems that map naturally to it.
-
-It has the pieces to start expanding that set of problems.
-]
----
-.left-column[
-## Chapel
-
-### Important
-
-### Mature
-
-### Just Getting Started
-]
-.right-column[
-Has a very solid base.
-- Native compilation, non-crazy runtime: scales down well.
-- Good single core performance.
-- Strong distributed-memory performance for rectangular dense or sparse arrays.
-- Excellent set of parallel primitives.
-- Useful tools.
-]
----
-.left-column[
-## Chapel
-
-### Important
-
-### Mature
-
-### Just Getting Started
-]
-.right-column[
-I claim that there's enough of a foundation to start building an ecosystem around.
-- _e.g._, in or close to the Spark regime, not the R regime
-
-But may still have to help users across their own &ldquo;Crevace
-of Discouragement&rdquo;
-- Make it so easy for a scientist to start using Chapel for their
-problems it's too hard to resist.
-
-Existing HPC stack helps with this!
-- Many excellent existing tools
-- That are incredibly difficult to start using
-
-User community can contribute significantly to this.
-]
----
-.left-column[
-## Chapel
-
-### Important
-
-### Mature
-
-### Just Getting Started
-
-### Large Linear Solves?
-]
-.right-column[
-[PETSc](http://www.mcs.anl.gov/petsc/) is a widely used library for large sparse iterative solves.
-- Excellent and comprehensive library of solvers
-- It is the basis of a significant number of home-made simulation codes
-- It is notoriously hard to start getting running with; nontrivial even for experts to install.
-
-Significant fraction of PETSc functionality is tied up in large CSR matrices of reasonable structure
-partitioned by row, vectors, and solvers built on top.
-
-What would a Chapel API to PETSc look like?
-
-What would a Chapel implementation of some core PETSc solvers look like?
-
-How about [Scalapack](http://www.netlib.org/scalapack/)?
-]
----
-.left-column[
-## Chapel
-
-### Important
-
-### Mature
-
-### Just Getting Started
-
-### Large Linear Solves?
-
-### Genomics?
-]
-.right-column[
-Graph and string problems in genomics is:
-- Huge: vastly larger than Astrophysics, which is where I come from
-- Badly underserved
-- Competition is threaded or even serial code on a single big memory machine
-    - _e.g._, lots of very nice code using Python dicts
-    - And no numba or numpy equivalent to speed up these sorts of operations
-
-Chapel already has associative, unstructured domains - what do some simple
-genomics tasks look like in Chapel?
-]
----
-.left-column[
-## Chapel
-
-### Important
-
-### Mature
-
-### Just Getting Started
-
-### Large Linear Solves?
-
-### Genomics?
-
-### Data Science?
-]
-.right-column[
-Still this missing middle problem:
-- Nothing (yet) can span the range of both R and Spark
-- Python is making inroads
-- Parts of the pieces are there:
-    - partitioned arrays of records
-- But would need other things
-    - shuffles, very dynamic resizing
-    - adoption may depend too strongly on libraries; R interop?
-]
----
-.left-column[
-## Chapel
-
-### Important
-
-### Mature
-
-### Just Getting Started
-
-### Large Linear Solves?
-
-### Genomics?
-
-### Data Science?
-
-### Glorious Age Of Expansion
-]
-.right-column[
-<img src="assets/img/ScientificComputing2017.png" width=50% style="float: right;"></img>
-
-Chapel has established a stronghold on the outskirts of modestly hostile territory.
-
-But there are scientists in neighboring territories who need help.
-
-In almost any direction, there are communities that would love what Chapel offers;
-- Productivity
-- Performance
-- Desktop-to-Cluster scalability.
-
-Future's wide open!
-]
-
     </textarea>
     <script src="remark/remark-latest.min.js">
     </script>
