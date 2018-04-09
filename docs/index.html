@@ -329,7 +329,6 @@ using Apache Spark.
 
     - HPC: "convergence" around exascale
         - no impact on current practice
-        - even less impact on complex workflows
 
     - Big Data: re-learning HPC lessons as needed
         - Individual projects adopt either better single-node performance or distribute memory performance
@@ -361,19 +360,63 @@ layout: false
 class: center, middle, inverse
 ## HPC / Big Data Convergence
 ---
-## The Present Day, 2017
-<img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
+## Convergence Ahead
+<img src="assets/img/convergence-collision.png" width=33% style="float: right;"></img>
 
-Will argue that they are not so different, and there's a lot to learn (on both sides) across the data science/simulation science divide
+Because HPC and Big Data started in different places and are on different paths, convergence is inevitable:
 
 * Simulations are getting more complex, dynamic
 
-* Big data problems have long been in-memory, increasingly compute intensive
+* Big data problems have long been in-memory, increasingly complex compute
 
-* Moving towards each other in fits and starts
+But the underlying problems are more or less the same!
 ---
 .left-column[
-## Big Data Problems
+## Convergence Ahead
+
+### HPC's path
+]
+.right-column[
+
+HPCs path over the last ~20 years has largely been about scale
+
+* Scaling up simulations
+
+* Story mainly about hardware
+
+* Fundamental software stack largely unchanged
+
+<img src="assets/img/convergence-hpc-bigger.png" width=75% style="float: center;"></img>
+]
+---
+.left-column[
+## Convergence Ahead
+
+### HPC's path
+
+### Big Data's path
+]
+.right-column[
+
+Big Data's path over the past ~10 years has always assumed as large scale as possible
+
+* Scaling up complexity of calculations
+
+* Story mainly about software stack
+
+* Fundamental approach to hardware largely unchanged (although accelerators in some contexts)
+
+<img src="assets/img/convergence-bigdata-better.png" width=75% style="float: center;"></img>
+]
+---
+.left-column[
+## Convergence Ahead
+
+### HPC's path
+
+### Big Data's path
+
+### Similar problems
 ]
 .right-column[
 Big Data problems same as HPC, if in different context
@@ -388,7 +431,13 @@ Big Data problems same as HPC, if in different context
 ]
 ---
 .left-column[
-## Big Data Problems
+## Convergence Ahead
+
+### HPC's path
+
+### Big Data's path
+
+### Similar problems
 
 ### Linear algebra
 ]
@@ -403,7 +452,13 @@ If looking at ngrams, cardinality can be enormous, no real pattern to sparsity
 ]
 ---
 .left-column[
-## Big Data Problems
+## Convergence Ahead
+
+### HPC's path
+
+### Big Data's path
+
+### Similar problems
 
 ### Linear algebra
 
@@ -419,7 +474,13 @@ https://en.wikipedia.org/wiki/Social_graph
 ]
 ---
 .left-column[
-## Big Data Problems
+## Convergence Ahead
+
+### HPC's path
+
+### Big Data's path
+
+### Similar problems
 
 ### Linear algebra
 
@@ -436,7 +497,13 @@ https://flink.apache.org/news/2015/08/24/introducing-flink-gelly.html
 ]
 ---
 .left-column[
-## Big Data Problems
+## Convergence Ahead
+
+### HPC's path
+
+### Big Data's path
+
+### Similar problems
 
 ### Linear algebra
 
@@ -483,6 +550,8 @@ Output of these discussions is primarily whitepapers and vendor press releases.
 ---
 .left-column[
 ## Convergence
+
+### HPC Side
 
 ### Big Data Side
 ]
@@ -593,265 +662,6 @@ And start correlating with other information (DNA variants, clinical data, pheno
 <tr><td><img src="assets/img/rnaseq.png" width=90%></img></td></tr>
 <tr><td>Figure from <a href="http://www.nature.com/nbt/journal/v32/n9/full/nbt.2931.html">Nature</a></td></tr>
 </tbody>
-]
----
-layout: false
-class: center, middle, inverse
-## R: https://www.r-project.org
----
-.left-column[
-## R
-
-### Overview
-]
-.right-column[
-<img src="assets/img/Rlogo.png" width=10% style="float: left;"></img>
-The R foundation considers R &ldquo;an environment within which statistical techniques are implemented.&rdquo;
-
-* A programming language built around statistical analysis and (primarily) interactive use.
-
-* Enormous contributed package library [CRAN](https://mirrors.nics.utk.edu/cran/) (10,700+ packages).
-
-* Lingua Franca of desktop statistical analysis.
-
-* Lovely newish development/interactive use environment, [RStudio](https://www.rstudio.com).
-
-* _Huge_ in biostatistics: [Bioconductor](https://bioconductor.org)
-
-.center[<img src="assets/img/rstudio-projects_new.png" width=40%></img>]
-]
----
-.left-column[
-## R
-
-### Overview
-
-### Initial History
-]
-.right-column[
-R's popularity was _not_ a given.
-
-* Many extremely established incumbant stats packages, commercial (SPSS, SAS) 
-
-* Referees can always say "I don't trust this new program, what does good old SPSS/SAS say?  (Fear may be more important than actual fact).
-
-* Free, easily extensible, high-quality &mdash; took ages to catch on, but it did.
-
-.center[
-<table width=45%>
-<tbody>
-<tr><td><img src="assets/img/fig_6b_rexersurveyalltools2015.png" width=90%></img></td></tr>
-<tr><td>Figure from <a href="http://r4stats.com/articles/popularity/">http://r4stats.com/articles/popularity/</a></td></tr>
-</tbody>
-]
-
-.center[**Lesson 1: Incumbents _can_ be beaten**.]
-]
----
-.left-column[
-## R
-
-### Overview
-
-### Initial History
-]
-.right-column[
-R's popularity was _not_ a given.
-
-* Many extremely established incumbant stats packages, commercial (SPSS, SAS) 
-
-* Referees can always say "I don't trust this new program, what does good old SPSS/SAS say?  (Fear may be more important than actual fact).
-
-* Free, easily extensible, high-quality --- took ages to catch on, but it did.
-
-.center[
-<table width=45%>
-<tbody>
-<tr><td><img src="assets/img/Fig_2d_ScholarlyImpact.png" width=90%></img></td></tr>
-<tr><td>Figure from <a href="http://r4stats.com/articles/popularity/">http://r4stats.com/articles/popularity/</a></td></tr>
-</tbody>
-]
-
-.center[**Lesson 2: Growth is slow, until it isn't**.]
-]
----
-.left-column[
-## R
-
-### Overview
-
-### Initial History
-]
-.right-column[
-A big reason for deciding to use R are the packages that are available
-
-* High-quality, user-contributed packages to solve specific types of problems
-
-* Written to solve authors' problem, helpful to others
-
-.center[**Lesson 3: Users' contributions can be as important for adoption as implementers'**.]
-
-.center[
-<table width=45%>
-<tbody>
-<tr><td><img src="assets/img/cran_growth.png" width=50%></img></td></tr>
-<tr><td>Figure from <a href="http://blog.revolutionanalytics.com/2016/04/cran-package-growth.html">http://blog.revolutionanalytics.com/2016/04/cran-package-growth.html</a></td></tr>
-</tbody>
-]
-]
----
-.left-column[
-## R
-
-### Overview
-
-### Initial History
-
-### Dataframes
-]
-.right-column[
-The fundamental data structure of R has been(*) the `dataframe`.
-
-* Think spreadsheet
-
-* List of typed columns (1d vectors)
-
-* Can be thought of as 1d array of `record`. 
-
-.center[ <img src="assets/img/dataframes.png" width=70%></img> ]
-]
----
-.left-column[
-## R
-
-### Overview
-
-### Initial History
-
-### Dataframes
-]
-.right-column[
-The fundamental data structure of R has been(*) the `dataframe`.
-
-* Think spreadsheet
-
-* List of typed columns (1d vectors)
-
-* Can be easily thought of as 1d array of `record`. 
-
-* Easily distributed over multiple machines!
-
-.center[ <img src="assets/img/dataframes-distributed.png" width=70%></img> ]
-]
----
-.left-column[
-## R
-
-### Overview
-
-### Initial History
-
-### Dataframes
-
-### HPC R
-]
-.right-column[
-The fundamental data structure of R has been the `dataframe`.
-
-* Easily distributed over multiple machines!
-
-One might reasonably expect that there thus would be a thriving 
-ecosystem of parallel/big data tools for R.  There's _some_
-truth to that (_e.g._ [CRAN HPC Task view](https://cran.r-project.org/web/views/HighPerformanceComputing.html)):
-
-.center[ <img src="assets/img/HPC-CRAN.png" width=70%></img> ]
-]
----
-.left-column[
-## R
-
-### Overview
-
-### Initial History
-
-### Dataframes
-
-### HPC R
-]
-.right-column[
-But a large number of packages isn't necessarily a sign of vibrancy
-
-* Can be wheel reinvention factory
-
-R has several (solid, well made) parallel packages: snow, multicore (now both in core),
-foreach.  
-* But they don't work together
-* And don't implement any higher-order algorithms.
-
-Also has several excellent packages that make use of parallelism:
-* Caret (various data mining algorithms)
-* BiocParallel (for Bioconductor packages)
-
-But these represent a _lot_ of work by people; hard to get from one side to the other.
-
-SparkR allows you to run R code through Spark, but impedence mismatch between paradigms.
-
-.center[<img src="assets/img/chasm_of_despair.png" width=70%></img>]
-]
----
-.left-column[
-## R
-
-### Overview
-
-### Initial History
-
-### Dataframes
-
-### HPC R
-]
-.right-column[
-If your parallelism isn't very easily expressed, and a higher-level
-package for solving your problems doesn't already exist, you have
-to parallelize your algorithms from very basic pieces
-
-* But scientists don't want to write parallel code
-* They just want to solve their problems!
-
-.center[**Lesson 4: Decompositions aren't enough &mdash; need rich, composable, parallel tools**.]
-
-.center[<img src="assets/img/chasm_of_despair.png" width=70%></img>]
-]
----
-.left-column[
-## R
-
-### Overview
-
-### Initial History
-
-### Dataframes
-
-### HPC R
-
-### Datatables
-
-### Pros/Cons
-]
-.right-column[
-
-Focused entirely on statistical computing (pro or con)
-
-**Cons**
-
-* Hit-or-miss support for parallel computations
-* Purely interpreted; pure R is slow
-
-**Pros**
-
-* Widespread adoption
-* Enormous package support (many written in C++)
-* Close to dominant on the desktop (with Python/Pandas nipping at heels)
 ]
 ---
 layout: false
