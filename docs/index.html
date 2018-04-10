@@ -153,8 +153,8 @@
 name: title
 layout: true
 class: center, middle, title
-count: false
 ---
+count: false
 # Dispatches from the Convergence Coalface:
 ## HPC, Big Data, and Large Scale Genomics
 Jonathan Dursi<br/>
@@ -245,7 +245,7 @@ It was a simpler time:
 .center[<img src="assets/img/ScientificComputing2007.png" width=33% style="float: right;"></img>]
 
 Widespread adption of computing and networking brought *data*, and lot of it.
-* "Internet-scale" companies were the first businesses to try taking advantage of all their data, but others soon followed
+* &ldquo;Internet-scale&rdquo; companies were the first businesses to try taking advantage of all their data, but others soon followed
     - Hadoop, HDFS spawned an entire ecosystem
 
 * In the sciences, genomics was in the right place at right time
@@ -318,7 +318,7 @@ using Apache Spark.
 * But fundamentally science
     - Extremely subtle analyses
     - Asking questions that haven't been asked before
-    - Testing, discovery of methods, means scale down vital
+    - Testing, discovery of methods, means scale _down_ vital
 ---
 ## Genomics is starting to form a bridge between the two solitudes
 <img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
@@ -327,12 +327,12 @@ using Apache Spark.
 
     - Immediate needs
 
-    - HPC: "convergence" around exascale
-        - no impact on current practice
+- HPC: &ldquo;convergence&rdquo; around exascale
+    - Little impact on current practice
 
-    - Big Data: re-learning HPC lessons as needed
-        - Individual projects adopt either better single-node performance or distribute memory performance
-        - genomics needs both
+- Big Data: re-learning HPC lessons as needed
+    - Individual projects adopt either better single-node performance or distribute memory performance
+    - Genomics needs both
 ---
 layout: false
 .left-column[
@@ -357,6 +357,7 @@ layout: false
 ]
 ---
 layout: false
+count: false
 class: center, middle, inverse
 ## HPC / Big Data Convergence
 ---
@@ -384,7 +385,8 @@ HPCs path over the last ~20 years has largely been about scale
 
 * Story mainly about hardware
 
-* Fundamental software stack largely unchanged
+* Fundamental software stack largely unchanged 
+    - (though adoption of directive-based approaches for accelerators suggests some willingess to adopt new approaches)
 
 <img src="assets/img/convergence-hpc-bigger.png" width=75% style="float: center;"></img>
 ]
@@ -404,7 +406,8 @@ Big Data's path over the past ~10 years has always assumed as large scale as pos
 
 * Story mainly about software stack
 
-* Fundamental approach to hardware largely unchanged (although accelerators in some contexts)
+* Fundamental approach to hardware largely unchanged 
+    - (although, again, adoption of accelerators for some use cases)
 
 <img src="assets/img/convergence-bigdata-better.png" width=75% style="float: center;"></img>
 ]
@@ -517,7 +520,7 @@ Calculations on (_e.g._) social graphs are typically very low-compute intensity:
 So that big-data graph computations are often _more_ latency sensitive than 
 more compute-intensive technical computations
 
-&rArr; lots of work done and in progresss to reduce communication/framework overhead
+&rArr; lots of work done and in progress to reduce communication/framework overhead
 
 .center[<img src="assets/img/graphx-tables_and_graphs.png" width=75%></img>]
 https://spark.apache.org/docs/1.2.1/graphx-programming-guide.html
@@ -530,22 +533,52 @@ https://spark.apache.org/docs/1.2.1/graphx-programming-guide.html
 ]
 .right-column[
 The problems big-data practitioners face are either:
-
 * The same as in traditional HPC
 * The same as new scientific computing fields
 * Or what data analysis/HPC will be facing towards exascale
     - Less regular/structured
     - More dynamic
+* This is starting to be recognized in HPC, much talk of &ldquo;HPC/HPDA convergence&rdquo;.
 ]
 --
 .right-column-cont[
-* This is starting to be recognized in HPC, much talk of "HPC/HPDA convergence"
-]
---
-.right-column-cont[
-Output of these discussions is primarily whitepapers and vendor press releases.
+Lots of whitepapers and vendor press releases...
 
 .center[<img src="assets/img/hpc-convergence.png" width=75%></img>]
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Dataflow
+]
+.right-column[
+Interesting work going on, but largely aimed at &ldquo;for exascale&rdquo; at some time in the future; genomics could use these now!
+
+Dataflow starting to attract attention in HPC, e.g. [PaRSEC at ICL](http://icl.utk.edu/parsec/):
+
+<img src="assets/img/parsec-toolchain.png" width=45%></img> <img src="assets/img/parsec-QR.png" width=40%></img>
+
+Make use of compilers, runtimes to more effectively parallelize complex data access patterns
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Dataflow
+
+### Extended PGAS
+]
+.right-column[
+Interesting work going on, but largely aimed at &ldquo;for exascale&rdquo; at some time in the future; genomics could use these now!
+
+Extended memory-hierarchy PGAS langauges with very deep runtime stacks, like Legion
+
+.center[<img src="assets/img/legion-stack.png" width=50%></img>]
 ]
 ---
 .left-column[
@@ -556,7 +589,7 @@ Output of these discussions is primarily whitepapers and vendor press releases.
 ### Big Data Side
 ]
 .right-column[
-The Big Data community thinks in terms of improving performance, not really in terms of "converging" with anything else.
+The Big Data community thinks in terms of improving performance, not really in terms of &ldquo;converging&rdquo; with anything else.
 ]
 --
 .right-column-cont[
@@ -568,6 +601,7 @@ To the extent that Big Data thinks of HPC at all, not as a source of inspiration
 ]
 ---
 layout: false
+count: false
 class: center, middle, inverse
 ## Genomics
 ---
@@ -596,11 +630,7 @@ Assembly:
 
 Or may have an assembled graph genome and try to find best match for
 given observed subsequence
-
----
-layout: false
-class: center, middle, inverse
-## Genomics
+]
 ---
 .left-column[
   ## Outline
@@ -692,7 +722,7 @@ and processing packages that grew up around it.
 ### Overview
 ]
 .right-column[
-Spark (2012) is in some ways "post-Hadoop"; it can happily
+Spark (2012) is in some ways &ldquo;post-Hadoop&rdquo;; it can happily
 interact with the Hadoop stack but doesn't require it.
 
 Built around concept of in-memory resilient distributed datasets
@@ -1501,155 +1531,6 @@ These approaches are extremely promising, and already completely usable at scale
 Already starting to attract attention in HPC, e.g. [PaRSEC at ICL](http://icl.utk.edu/parsec/):
 
 <img src="assets/img/parsec-toolchain.png" width=45%></img> <img src="assets/img/parsec-QR.png" width=40%></img>
-]
----
-class: center, middle, inverse
-count: false
-## Julia: http://julialang.org
----
-.left-column[
-## Julia
-
-### Overview
-]
-.right-column[
-<img src="assets/img/julia.png" width=15% style="float: left;"></img> is &ldquo;a high-level, high-performance dynamic programming language for numerical computing.&rdquo;
-
-Like Chapel, aims to be productive, performant, parallel.  Targets itself as a matlab-killer.
-
-Most notable features:
-- Dynamic language: JIT, rich types, multiple dispatch
-    - Give a &ldquo;scripting language&rdquo; feel while giving performance closer to C or Fortran
-
-- Lisp-like metaprogramming: Code is Data
-    - With JIT, makes it possible to re-write Julia code on the fly
-    - Makes it possible to write mini-DSLs for particular problem types: [differential equations](https://github.com/JuliaDiffEq/DifferentialEquations.jl), [optimization](https://github.com/JuliaOpt/JuMP.jl)
-
-- Full suite of parallel primitives
-]
----
-.left-column[
-## Julia
-
-### Overview
-]
-.right-column[
-```
-using PyPlot
-
-# julia set
-function julia(z, c; maxiter=200)
-    for n = 1:maxiter
-        if abs2(z) > 4
-            return n-1
-        end
-        z = z*z + c
-    end
-    return maxiter
-end
-
-jset = [ UInt8(julia(complex(r,i), complex(-.06,.67)))
-             for i=1:-.002:-1, r=-1.5:.002:1.5 ];
-get_cmap("RdGy")
-imshow(jset, cmap="RdGy", extent=[-1.5,1.5,-1,1]
-```
-<img src="assets/img/juliaset_in_julia.png" width=65%></img>
-]
----
-.left-column[
-## Julia
-
-### Overview
-
-### Single-Core Performance
-]
-.right-column[
-
-Single-core performance is very good, particularly for a JIT.
-
-Test below is for a simple 1-d stencil calculation ( https://www.dursi.ca/post/julia-vs-chapel.html )
-
-<table>
-<th>time</th> <th>Julia</th> <th>Chapel</th> <th>Numpy + Numba</th><th>Numpy</th>
-</thead>
-<tbody style="border: 1px solid black;">
-<tr><td style="border: 1px solid black;">run</td><td style="border: 1px solid black;">0.0084</td><td style="border: 1px solid black;">0.0098 s</td><td style="border: 1px solid black;">0.017 s</td><td style="border: 1px solid black;">0.069 s</td></tr>
-<tr><td style="border: 1px solid black;">compile</td><td style="border: 1px solid black;">0.57 s</td><td style="border: 1px solid black;">4.8s</td><td style="border: 1px solid black;">0.73 s</td><td style="border: 1px solid black;"> - </td></tr>
-</tbody>
-</table>
-
-Julia edges out Chapel... but for this test, look at Python with Numpy and numba, only a factor of two behind.
-
-Single-core performance has been the main focus of Julia, to the exclusion of almost all else - multithreading is still considered experimental.
-]
----
-.left-column[
-## Julia
-
-### Overview
-
-### Single-Core Performance
-
-### Distributed Data
-]
-.right-column[
-Julia has a DistributedArray module, but it has very large overhead; better suited for merging data once at the end of long purely local computation (processing and then stacking images, etc)
-
-Below is a test for running on 8 cores of a (single) node:
-
- <table style="border: 1px solid black; margin: 0 auto; border-collapse:collapse;">
- <tbody style="border: 1px solid black;">
- <tr> <td style="border: 1px solid black;" colspan=2>Julia </td><td style="border: 1px solid black;" colspan=2>Chapel</td><td>Dask</td> </tr>
- <tr><td style="border: 1px solid black;"> -p=1</td><td style="border: 1px solid black;">-p=8</td><td style="border: 1px solid black;">-nl=1 tasks=8</td><td style="border: 1px solid black;">-nl=8 tasks=1</td><td style="border: 1px solid black;">workers=8</td></tr>
- <td style="border: 1px solid black;">177s s</td>
- <td style="border: 1px solid black;">264 s</td>
- <td style="border: 1px solid black;">**0.4 s**</td>
- <td style="border: 1px solid black;">145 s</td>
- <td style="border: 1px solid black;">193 s</td></tr>
- </tbody>
- </table>
-
-.center[**Lesson 14: Hierarchical approach to parallelism matters**.]
-
-Need to be able to easily exploit threading, NUMA locality, cross-node communications...
-
-Julia has good libraries for data analysis, modest support for graph algorithms, but all single-node; very little support for distributed memory computing.
-]
----
-.left-column[
-## Julia
-
-### Overview
-
-### Single-Core Performance
-
-### Distributed Data
-
-### Pros/Cons
-]
-.right-column[
-**Cons**
-* Very little performant support for distributed memory computing, not clear it is forthcoming
-
-**Pros**
-
-* Single core fast, and on-node fairly fast
-* Very nice interactive use, works with Jupyter or REPL
-* Some excellent libraries
-* Very powerful platform for writing DSLs
-]
----
-class: center, middle, inverse
-count: false
-## My Benchmark Problems
----
-.left-column[
-## My Benchmark Problems
-]
-.right-column[
-So where does this leave my &ldquo;curated&rdquo; (read: wildly biased) set of benchmark problems?
-
-In a dystopic world without efforts like Chapel, what would I be using?
 ]
 ---
 .left-column[
