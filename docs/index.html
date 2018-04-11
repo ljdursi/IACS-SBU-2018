@@ -400,7 +400,7 @@ HPCs path over the last ~20 years has largely been about scale
 ]
 .right-column[
 
-Big Data's path over the past ~10 years has always assumed as large scale as possible
+Big Data's path over the past ~10 years has always taken compute/data at scale as a given
 
 * Scaling up complexity of calculations
 
@@ -598,6 +598,70 @@ To the extent that Big Data thinks of HPC at all, not as a source of inspiration
 .center[<img src="assets/img/hpc-doesnt-care-what-you-think.png" width=100%></img>]
 
 [Slide from [talk](https://www.slideshare.net/DataScienceAssociati/using-ai-to-tackle-the-future-of-health-care-data) by Brian Dolan, Deep6 AI]
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+]
+.right-column[
+
+The innovations on the Big Data side come from databases and from machine learning.
+
+Databases:
+* Fast (100 &mu;s or better) irregular distributed data access
+* Lean heavily on hardware knowledge
+
+Machine learning:
+* More tightly coupled iterative computing
+* Lean more on software design
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+### Commodity H/W
+]
+.right-column[
+
+[ScyllaDB](https://www.scylladb.com):
+* Very careful (HPC-like) C++ tuned on-node implementation (http://seastar.io)
+* User-space networking and ethernet library DPDK (https://dpdk.org)
+
+.center[<img src="assets/img/scylladb.png" width=75%></img>]
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+### Commodity H/W
+
+### RDMA
+]
+.right-column[
+
+[FaRM](https://www.microsoft.com/en-us/research/publication/farm-fast-remote-memory/) from Microsoft Research:
+* RDMA + RPC
+* SSDs
+
+Uses RDMA on converged 40 GigE + SSDs to get ~30 &mu;s latencies
+to 1.8TB of key-value data on disk over 20 machines at high load
+(8 million lookups/sec).
+
+.center[<img src="assets/img/farm-addressing.png" width=75%></img>]
+
+Image from the [FaRM USENIX paper](https://www.usenix.org/system/files/conference/nsdi14/nsdi14-paper-dragojevic.pdf)
 ]
 ---
 layout: false
