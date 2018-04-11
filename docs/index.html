@@ -11,7 +11,7 @@
       body {
         font-family: 'Average';
       }
-      h1, h2, h3 {
+      h1, h2, h3, h4 {
         font-family: 'Oswald';
         font-weight: 400;
         color: #348e28;
@@ -20,6 +20,7 @@
       .remark-slide-content h1 { font-size: 2.2em; }
       .remark-slide-content h2 { font-size: 1.6em; }
       .remark-slide-content h3 { font-size: 1.2em; }
+      .remark-slide-content h4 { font-size: 1.0em; }
       .footnote {
         position: absolute;
         bottom: 3em;
@@ -627,13 +628,18 @@ Machine learning:
 
 ### Big Data Side
 
-### Commodity H/W
+#### Commodity H/W
 ]
 .right-column[
 
 [ScyllaDB](https://www.scylladb.com):
 * Very careful (HPC-like) C++ tuned on-node implementation (http://seastar.io)
-* User-space networking and ethernet library DPDK (https://dpdk.org)
+    - Tasks pinned to cores
+    - Sharding
+    - Lock-free data structures
+
+* User-space networking and ethernet library Data Plane Development Kit (DPDK: https://dpdk.org)
+    - gt; 10M packets/sec
 
 .center[<img src="assets/img/scylladb.png" width=75%></img>]
 ]
@@ -645,9 +651,9 @@ Machine learning:
 
 ### Big Data Side
 
-### Commodity H/W
+#### Commodity H/W
 
-### RDMA
+#### RDMA
 ]
 .right-column[
 
@@ -664,10 +670,380 @@ to 1.8TB of key-value data on disk over 20 machines at high load
 Image from the [FaRM USENIX paper](https://www.usenix.org/system/files/conference/nsdi14/nsdi14-paper-dragojevic.pdf)
 ]
 ---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### TensorFlow
+]
+.right-column[
+<img src="assets/img/tensors_flowing.gif" width=33% style="float: right;"></img>
+Tensorflow: from Google, Nov 2015
+* Computation with dataflow graphs
+* Data is always in the form of &ldquo;tensors&rdquo; (n-d arrays).
+* Deep learning and other machine learning tasks.
+
+* Lots of BLAS operations and function evaluations but also general numpy-type operations, can use GPUs or CPUs.
+
+Getting very close to traditional HPC problems
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### TensorFlow
+]
+.right-column[
+All sorts of computations on regular arrays can be performed.
+
+Some computations can be split across GPUs, or (eventually) even nodes.
+
+All are multi-threaded.
+
+.center[<img src="assets/img/tf_mandelbrot.png" width=75%>]
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### TensorFlow
+]
+.right-column[
+All sorts of computations on regular arrays can be performed.
+
+Some computations can be split across GPUs, or (eventually) even nodes.
+
+All are multi-threaded.
+
+.center[<img src="assets/img/tf_wave_eqn.png" width=75%>]
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### TensorFlow
+]
+.right-column[
+
+As with laying out the computations, distributing the computations is still 
+quite manual:
+
+```python
+with tf.device("/job:ps/task:0"):
+  weights_1 = tf.Variable(...)
+  biases_1 = tf.Variable(...)
+
+with tf.device("/job:ps/task:1"):
+  weights_2 = tf.Variable(...)
+  biases_2 = tf.Variable(...)
+
+with tf.device("/job:worker/task:7"):
+  input, labels = ...
+  layer_1 = tf.nn.relu(tf.matmul(input, weights_1) + biases_1)
+  logits = tf.nn.relu(tf.matmul(layer_1, weights_2) + biases_2)
+  # ...
+  train_op = ...
+
+with tf.Session("grpc://worker7.example.com:2222") as sess:
+  for _ in range(10000):
+    sess.run(train_op)
+```
+
+Communications is done using [gRPC](http://www.grpc.io), a high-performance
+RPC library based on what Google uses internally.
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### TensorFlow
+
+#### Spark
+]
+.right-column[
+Spark (2012) is in some ways &ldquo;post-Hadoop&rdquo;; it can happily
+interact with the Hadoop stack but doesn't require it.
+
+Built around concept of in-memory resilient distributed datasets
+
+* Tables of rows, distributed across the job, normally in-memory
+* Immutable
+* Restricted to certain transformations 
+
+Used for database, machine learning (linear algebra, graph, tree methods), _etc._
+
+.center[<img src="assets/img/spark-rdd.png" width=50%></img>]
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### TensorFlow
+
+#### Spark
+]
+.right-column[
+<img src="assets/img/logistic-regression.png" width=33% style="float: right;"></img>
+Being in-memory was a huge performance win over Hadoop MapReduce
+for multiple passes through data.
+
+Spark immediately began supplanting MapReduce for complex calculations.
+
+
+Project Tungsten (2015) was an extensive rewriting of core Spark for performance.
+* Get rid of JVM memory management, handle it themselves (FORTRAN77 workspace arrays!)
+* Vastly improved cache performance
+* Code generation (more later)
+
+In 2016, built-in GPU support.
+]
+---
+layout: false
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### TensorFlow
+
+#### Spark
+]
+.right-column[
+Spark fault-tolerant tables (RDDs, Resiliant Distributed Datasets) prove to be a very powerful abstraction.
+
+Can easily use join, _etc._ to bring all values associated with a key together:
+  - Like all stencil terms that are contribute at a particular grid point
+  
+.center[<img src="assets/img/spark-rdds-diffusion.png" width=55%></img>]
+
+Can build on dataframes for data analysis
+]
+---
+layout: false
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### TensorFlow
+
+#### Spark
+]
+.right-column[
+Graph library &mdash; [GraphX](http://spark.apache.org/graphx/) &mdash; has also been implemented on top of RDDs.
+
+Many interesting features, but for us: [Pregel](http://blog.acolyer.org/2015/05/26/pregel-a-system-for-large-scale-graph-processing/)-like algorithms on graphs.
+
+Nodes passes messages to their neighbours along edges.
+<img src="assets/img/graphx.png" width=75%></img>
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### TensorFlow
+
+#### Spark
+]
+.right-column[
+This makes implementing unstructured mesh methods extremely straightforward:
+
+```scala
+def step(g:Graph[nodetype, edgetype]) : Graph[nodetype, edgetype] = {
+    val terms = g.aggregateMessages[msgtype](
+        // Map
+        triplet => { 
+            triplet.sendToSrc(src_msg(triplet.attr, triplet.srcAttr, triplet.dstAttr))
+            triplet.sendToDst(dest_msg(triplet.attr, triplet.srcAttr, triplet.dstAttr))
+          },
+        // Reduce
+        (a, b) => (a._1, a._2, a._3 + b._3, a._4 + b._4, a._5 + b._5, a._6 + b._6, a._7 + b._7)
+    )
+    
+    val new_nodes = terms.mapValues((id, attr) => apply_update(id, attr))
+    
+    return Graph(new_nodes, graph.edges)
+}
+```
+
+.center[<img src="assets/img/graphx-init.png" width=33%></img> <img src="assets/img/graphx-final.png" width=33%></img>]
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+### Coming Together
+]
+.right-column[
+Reaching towards similar approaches:
+
+* Both sides now capable of fully taking advantage of hardware
+    - CPU, but also memory, I/O, network
+
+* Dataflow as a model:
+    - Taking advantage of modern compilers, runtimes
+    - Tool for abstracting away architecture: performance portability
+
+* Higher level languages
+
+* But nothing combines all of the pieces!
+]
+---
 layout: false
 count: false
 class: center, middle, inverse
 ## Genomics
+---
+.left-column[
+## Genomics
+
+### Data volumes
+]
+.right-column[
+Genomic volumes currently doubling every 7-12 months
+
+Currently driven by research projects, on both human and model organisms
+
+.center[<img src="assets/img/genomic-data-volumes.png" style="float: center;" width=100%>]
+]
+---
+.left-column[
+## Genomics
+
+### Data volumes
+
+#### New devices
+]
+.right-column[
+<img src="assets/img/genomic-data-volumes.png" style="float: right;" width=33%>
+This (IMHO) understates the near-term rate of change
+
+New devices are arriving which will move some sequencing from specialized core facilities to small labs (_c.f._ &ldquo;killer micros&rdquo;)
+
+.center[<img src="assets/img/MinION.jpg" width=40%> <img src="assets/img/sequencing-animated.gif" width=40%>]
+
+[Credit: [Oxford Nanopore](http://www.nanoporetech.com)]
+]
+---
+.left-column[
+## Genomics
+
+### Data volumes
+
+#### New devices
+
+#### New data types
+]
+.right-column[
+Entirely new data types are becoming available for the first time:
+* Direct RNA sequencing [Credit: [Oxford Nanopore](http://www.nanoporetech.com)]
+
+.center[<img src="assets/img/RNA_v1.svg" width=50%>]
+
+
+And fairly new data types or assays are becoming more and more common:
+* Metagenomics
+* Transcriptomics
+* Epigenomics (methylation, CHiP-seq...)
+]
+---
+.left-column[
+## Genomics
+
+### Data volumes
+
+#### New devices
+
+#### New data types
+
+#### Genomic medicine
+]
+.right-column[
+And all of those changes in research genomics are going to be small potatoes compared to the real elephant in the room: genomic medicine.
+
+.center[<img src="assets/img/genomic-medicine.jpg" width=50%>]
+
+[&ldquo;Genomic Medicine: A Decade of Successes, Challenges, and Opportunities&rdquo;, McCarthy, McLeod, and Ginsburg, (2013)](http://stm.sciencemag.org/content/5/189/189sr4.full)
+
+Whole genome sequencing already starting to become part of the toolkit for diagnosing rare diseases, oncology
+
+~$1000 is a lot for a test, but not unfathomable
+
+As becomes cheaper/easier/faster, will become standard of care for more and more cases
+
+And medicine is _huge_ - hospital spending alone is ~10x entire NIH budget
+]
 ---
 .left-column[
   ## Outline
@@ -757,11 +1133,6 @@ And start correlating with other information (DNA variants, clinical data, pheno
 <tr><td>Figure from <a href="http://www.nature.com/nbt/journal/v32/n9/full/nbt.2931.html">Nature</a></td></tr>
 </tbody>
 ]
----
-layout: false
-class: center, middle, inverse
-
-## Spark: http://spark.apache.com
 ---
 .left-column[
 ## Spark
@@ -1131,432 +1502,6 @@ approach is doomed to failure?
 * Very rapidly growing
 * Performance improvements version to version
 * Easy to find people willing to learn
-]
----
-class: center, middle, inverse
-count: false
-## Dask: http://dask.pydata.org/
----
-.left-column[
-## Dask
-
-### Overview
-]
-.right-column[
-Dask is a python parallel computing package
-
-* Very new - 2015
-* As small as possible
-* Scales down very nicely
-* Adoption extremely fast
-]
---
-.right-column-cont[
-* Works very nicely with NumPy, Pandas, Scikit-Learn
-* Is definitely nibbling into HPC &ldquo;market share&rdquo;
-    * For traditional numerical computing on few nodes
-    * For less regular data analysis/machine learning on larger scale
-    * (likely siphoning off a little uptake of Spark, too)
-
-Used for very general data analysis (linear algebra, trees, tables, stats, graphs...) and
-machine learning
-
-.center[**Lesson 11: Library support vital**]
-]
----
-.left-column[
-## Dask
-
-### Overview
-
-### Task Graphs
-]
-.right-column[
-Allows manual creation of quite general parallel computing data
-flows (making it a great way to prototype parallel numerical
-algorithms):
-
-```python
-from dask import delayed, value
-
-@delayed
-def increment(x, inc=1):
-    return x + inc
-
-@delayed
-def decrement(x, dec=1):
-    return x - dec
-
-@delayed
-def multiply(x, factor):
-    return x*factor
-
-w = increment(1)
-x = decrement(5)
-y = multiply(w, x)
-z = increment(y, 3)
-
-from dask.dot import dot_graph
-dot_graph(z.dask)
-
-z.compute()
-```
-<img src="assets/img/dask-simplegraph.png" style="position: fixed; height: 500px; top: 150px; right: 100px"></img>
-]
----
-.left-column[
-## Dask
-
-### Overview
-
-### Task Graphs
-]
-.right-column[
-Once the graph is constructed, computing means scheduling either across threads, processes, or nodes
-
-* Redundant tasks (recomputation) pruned 
-* Intermediate tasks discarded after use
-* Memory use kept low
-* If guesses wrong, task dies, scheduler retries
-    * Fault tolerance
-
-.center[<img src="assets/img/dask-collections-schedulers.png" width=75%></img>]
-.center[http://dask.pydata.org/en/latest/index.html]
-]
----
-.left-column[
-## Dask
-
-### Overview
-
-### Task Graphs
-
-### Dask Arrays
-]
-.right-column[
-Array support also includes a small but growing number of linear algebra routines
-
-Dask allows out-of-core computation on arrays (or dataframes, or bags of objects): will be increasingly important in NVM era
-
-* Graph scheduler automatically pulls only chunks necessary for any task into memory
-* New: intermediate results can be spilled to disk
-
-```python
-file = h5py.File(hdf_filename,'r')
-mtx = da.from_array(file['/M'], chunks=(1000, 1000))
-u, s, v = da.linalg.svd(mtx)
-u.compute()
-```
-
-.center[**Lesson 12: With NVMe, out-of-core is coming back, and some packages are already thinking about it**]
-]
----
-.left-column[
-## Dask
-
-### Overview
-
-### Task Graphs
-
-### Dask Arrays
-]
-.right-column[
-Arrays have support for guardcells, which make certain sorts of calculations
-trivial to parallelize (but lots of copying right now):
-
-(From dask notebook)
-```python
-subdomain_init = da.from_array(dens_init, chunks=((npts+1)//2, (npts+1)//2))
-
-def dask_step(subdomain, nguard=2):
-    # `advect` is just operator on a numpy array
-    return subdomain.map_overlap(advect, depth=nguard, boundary='periodic')
-
-with ResourceProfiler(0.5) as rprof, Profiler() as prof:
-    subdomain = subdomain_init
-    nsteps = 100
-    for step in range(0, nsteps//2):
-        subdomain = dask_step(subdomain)
-    subdomain = subdomain.compute(num_workers=2, get=mp_get)
-```
-<img src="assets/img/dask-advection.png" width=75%></img>
-]
----
-.left-column[
-## Dask
-
-### Overview
-
-### Task Graphs
-
-### Dask Arrays
-
-### Diagnostics
-]
-.right-column[
-Comes with several very useful performance profiling tools which 
-will be instantly famiilar to HPC community members
-
-<img src="assets/img/dask-timeline-zoom.png" width=75%></img>
-]
----
-.left-column[
-## Dask
-
-### Overview
-
-### Task Graphs
-
-### Dask Arrays
-
-### Diagnostics
-
-### Pros/Cons
-]
-.right-column[
-Not going to be a killer platform for solving PDEs just yet
-- I claim this is because you can't hint strongly enough to scheduler yet about data placement
-
-Could easily be of interest in very near term for large-scale biostatistical data analysis (scikit-learn).
-
-Out-of-core analysis makes scale down even more interesting.
-
-Nothing really there for graph problems, but it's not impossible in the medium term.
-]
----
-.left-column[
-## Dask
-
-### Overview
-
-### Task Graphs
-
-### Dask Arrays
-
-### Diagnostics
-
-### Pros/Cons
-]
-.right-column[
-**Cons**
-
-* Performance: Aimed at analysis tasks (big, more loosely coupled) rather than simulation
-    * Scheduler+TCP: 200&nbsp;&mu;s per-task overhead, orders of magnitude larger than an MPI message
-    * Single scheduler processes
-    * Not intended as replacement in general for large-scale tightly-coupled computing
-
-**Pros**
-
-* Trivial to install, start using
-* Outstanding for prototyping parallel algorithms
-* Out-of-core support baked in
-* With Numba+Numpy, reasonable single-core performance (~factor of 2 of Chapel)
-* Automatically overlaps communication with computation: 200&nbsp;&mu;s might not be so bad for some methods
-* Scheduler, communications all in pure python right now, rapidly evolving:
-    * **Much** scope for speedup
-]
----
-class: center, middle, inverse
-count: false
-## TensorFlow: http://tensorflow.org
----
-.left-column[
-## TensorFlow
-
-### Overview
-]
-.right-column[
-<img src="assets/img/tensors_flowing.gif" width=33% style="float: right;"></img>
-TensorFlow is an open-source dataflow for numerical computation with dataflow graphs, where the data is always in the form of 
-&ldquo;tensors&rdquo; (n-d arrays).
-
-Very new: Released November 2015
-
-From Google, who uses it for deep learning and othe rmachine learning tasks.
-
-Lots of BLAS operations and function evaluations but also general
-numpy-type operations, can use GPUs or CPUs.
-
-Deep learning: largely (but not exclusively) about breaking data (training set) into large chunks,
-performing calculations, and updating each other with updates from those calculations synchronously
-or asynchronously.
-
-.center[**Lesson 13: Parts of &ldquo;big data&rdquo; are getting very close to traditional HPC problems**.]
-]
----
-.left-column[
-## TensorFlow
-
-### Overview
-
-### Graphs
-]
-.right-column[
-As an example of how a computation is set up, here is a linear regression example.
-
-TensorFlow notebook 1
-
-<img src="assets/img/tf_regression_code.png" width=110%></img>
-]
----
-.left-column[
-## TensorFlow
-
-### Overview
-
-### Graphs
-]
-.right-column[
-Linear regression is already built in, and doesn't need to be iterative, but this example is quite general and shows how it works.
-
-Variables are explicitly introduced to the TensorFlow runtime, and a series of transformations on the
-variables are defined.
-
-When the entire flowgraph is set up, the system can be run.
-
-The integration of tensorflow tensors and numpy arrays is very nice.
-
-<img src="assets/img/tf_regression_fit.png" width=80%></img>
-]
----
-.left-column[
-## TensorFlow
-
-### Overview
-
-### Graphs
-
-### Mandelbrot
-]
-.right-column[
-All sorts of computations on regular arrays can be performed.
-
-Some computations can be split across GPUs, or (eventually) even nodes.
-
-All are multi-threaded.
-
-.center[<img src="assets/img/tf_mandelbrot.png" width=75%>]
-]
----
-.left-column[
-## TensorFlow
-
-### Overview
-
-### Graphs
-
-### Mandelbrot
-
-### Wave Eqn
-]
-.right-column[
-All sorts of computations on regular arrays can be performed.
-
-Some computations can be split across GPUs, or (eventually) even nodes.
-
-All are multi-threaded.
-
-.center[<img src="assets/img/tf_wave_eqn.png" width=75%>]
-]
----
-.left-column[
-## TensorFlow
-
-### Overview
-
-### Graphs
-
-### Mandelbrot
-
-### Wave Eqn
-
-### Distributed
-]
-.right-column[
-
-As with laying out the computations, distributing the computations is still 
-quite manual:
-
-```python
-with tf.device("/job:ps/task:0"):
-  weights_1 = tf.Variable(...)
-  biases_1 = tf.Variable(...)
-
-with tf.device("/job:ps/task:1"):
-  weights_2 = tf.Variable(...)
-  biases_2 = tf.Variable(...)
-
-with tf.device("/job:worker/task:7"):
-  input, labels = ...
-  layer_1 = tf.nn.relu(tf.matmul(input, weights_1) + biases_1)
-  logits = tf.nn.relu(tf.matmul(layer_1, weights_2) + biases_2)
-  # ...
-  train_op = ...
-
-with tf.Session("grpc://worker7.example.com:2222") as sess:
-  for _ in range(10000):
-    sess.run(train_op)
-```
-
-Communications is done using [gRPC](http://www.grpc.io), a high-performance
-RPC library based on what Google uses internally.
-]
----
-.left-column[
-## TensorFlow
-
-### Overview
-
-### Graphs
-
-### Mandelbrot
-
-### Wave Eqn
-
-### Distributed
-
-### Adoption
-]
-.right-column[
-Very rapid adoption, even though targetted very narrowly: deep learning
-
-All threaded number crunching on arrays and communication of results of those
-array calculations
-
-.center[<img src="assets/img/tensorflow-interest.png" width=75%>]
-]
----
-.left-column[
-## TensorFlow
-
-### Overview
-
-### Graphs
-
-### Mandelbrot
-
-### Wave Eqn
-
-### Distributed
-
-### Adoption
-
-### Pros/Cons
-]
-.right-column[
-
-**Cons**
-
-* N-d arrays only means limited support for, e.g., unstructured meshes, hash tables (bioinformatics)
-* Distribution of work remains limited and manual 
-
-**Pros**
-
-* C++ - interfacing is much simpler than Spark
-* Fast
-* GPU, CPU support, not unreasonable to expect Phi support shortly
-* Can make use of infrastructure for synchronous, asynchronous updates between data-parallel tasks
-* Great for data processing, image processing, or computations on n-d arrays
 ]
 ---
 .left-column[
