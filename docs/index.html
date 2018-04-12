@@ -331,7 +331,7 @@ using Apache Spark.
     - Future looking
 
 * Big Data: re-learning HPC lessons as needed
-    - Individual projects adopt either better single-node performance or distribute memory performance
+    - Individual projects adopt either better single-node performance or distributed memory performance
     - Genomics needs both
 --
 * It's going to take people with knowledge of lots of different parts of computational science to make this happen
@@ -354,7 +354,7 @@ layout: false
     - Data types
     - Immediate needs
 
-* A tour of increasingly hybrid genomics projects
+* A tour of partly hybrid genomics projects
     - Pan-Cancer Analysis of Whole Genomes
     - Nanopore sequencing
     - CanDIG (http://www.distributedgenomics.ca)
@@ -1514,14 +1514,410 @@ International effort
 .right-column[
 ### Pan-Cancer Analysis of Whole Genomes
 
-International effort
-* Consistent analysis of 2,778 paired tumour/normal sequenced whole genomes
-* ~30 cancer types
-* Dozens of projects
+Cancers widely varying
+* Internal variation
+* Between-cancer variation
+
+Want to build a strong data basis for commonalities between cancers, particularlities to given types
 
 <img src="assets/img/pcawg_snvs.png" width=45%></img> <img src="assets/img/pcawg_indels.png" width=45%></img>
 ]
 ---
+.left-column[
+## Projects
+
+### PCAWG
+]
+.right-column[
+### Pan-Cancer Analysis of Whole Genomes
+
+Substantial data legacy of clinical, genomic data
+
+<img src="assets/img/pcawg-data-types.png" width=65% style="float: center"></img>
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+]
+.right-column[
+<img src="assets/img/pcawg-pipeline.png" width=85% style="float: center"></img>
+
+Very complicated technical pipeline to get the final data set that cancer biologists could study.
+
+Orchestration work led by [Christina Yung](https://gdc.cancer.gov/about-gdc/gdc-team/christina-yung-phd), then OICR, now 
+NIH NCI Genomic Data Commons, and [Brian O'Connor](https://www.soe.ucsc.edu/people/broconno) now at UCSC.
+
+Had to run this reliably, across many countries, datasets, and infrastructures &mdash; and be able to update!
+* Some raw data sets couldn't leave their respective countries
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+]
+.right-column[
+### Pan-Cancer Analysis of Whole Genomes
+
+&ldquo;We are no longer in the age of Data, we are in the age of Process.&rdquo; Vahan Simonyan - FDA ([ref](https://twitter.com/biocrusoe/status/977175159965700099))
+<img src="assets/img/pcawg-pipeline.png" width=45% style="float: right"></img>
+
+When orchestrating something of this scale, automation, observability, reproducibility key!  
+
+Cloud/Big data frameworks made this much more approachable - would be even more so today
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+]
+.right-column[
+### Pan-Cancer Analysis of Whole Genomes
+
+Were big early adopters of Docker, with bioinformatics containers being deposited on [dockstore.org](http://www.dockstore.org)
+<img src="assets/img/dockstore.png" width=55% style="float: center"></img>
+
+Absolutely necessary to make sure that everyone was running same versions, could easily deploy updates
+
+Might use Singularity if started today?
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+]
+.right-column[
+### Pan-Cancer Analysis of Whole Genomes
+
+Cloud orchestration was much simpler than local clusters
+* Triggers
+* Robust dependencies
+* Monitoring
+
+<img src="assets/img/aws-batch.jpg" width=55% style="float: right"></img>
+
+Today would probably use something like AWS Batch and container service to make it easier
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+]
+.right-column[
+### Pan-Cancer Analysis of Whole Genomes
+
+<img src="assets/img/snv_accuracy_boxplots.png" width=55% style="float: right"></img>
+My own part involved creating &ldquo;gold&rdquo; short somatic variant calls from the 4 callers
+that were run by that set of pipelines.
+
+<img src="assets/img/snv_consensus_accuracy_boxplots.png" width=55% style="float: right"></img>
+Selection of ~250,000 somatic variants for deep sequencing validation, build an ensemble model
+from the 4 core callers.
+
+Again, process matters! Automation, reproduciblity.
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+]
+.right-column[
+### Pan-Cancer Analysis of Whole Genomes
+
+Running would have been easier with lighter memory requirements, even if that meant more nodes
+
+Had problem with some structural variant callers in particular
+
+Would have been great to be able to do joint variant calling, simplified consensus calling methodology
+
+More memory requirements, issues with privacy
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+
+### Nanopore
+]
+.right-column[
+### Nanopore sequencing
+
+.center[<img src="assets/img/sequencing-animated.gif" width=80%>]
+One of a handful of &ldquo;3rd generation&rdquo; sequencing technologies 
+
+DNA is ratcheted through a pore by an engineered protein (similar to what is at work in transcription)
+
+Base interacts with pore, reduces current flow through ionic fluid in pore
+
+DNA sequencing becomes signal processing - with floating point values, even!
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+
+### Nanopore
+]
+.right-column[
+### Nanopore sequencing
+
+Probabilistic model for base calls given the data
+
+.center[<img src="assets/img/nanopore-processing.png" width=60%>]
+
+Jared's lab put out first open-source widely available software for calling the base sequence
+- Allowed in-field base calling (until then, cloud-only)
+
+Very HPC-type techniques - efficient threading (OpenMP!), tuned lookup tables for logarithm calculations
+for liklihood, careful use of memory.
+
+Very noisy reads at individual bases (~80-90% accuracy) but extremely long reads (up to 1Mbp as vs 250bp)
+makes very exciting for many applications
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+
+### Nanopore
+]
+.right-column[
+### Nanopore sequencing
+
+Field base calling - and accurate variant calling allowed in-field tracking of Zika and then
+Ebola outbreaks (http://nextstrain.org)
+
+.center[<img src="assets/img/ebola-evolution.png" width=80%>]
+
+Local &ldquo;HPC&rdquo; techinques allowed use of resource-constrained local compute
+
+Cloud/web tools for the near real-time tracking
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+
+### Nanopore
+]
+.right-column[
+### Methylation
+
+Approach very similar to variant calling allows identification of base modifications
+
+.center[<img src="assets/img/methylation.png" width=80%>]
+
+Trained model to find metylation (5mC) in a CpG context
+
+Needed modest amounts of training data (HMM), but training took a long time
+
+Train model, then distribute it with the software
+* Can &ldquo;see&rdquo; methylation in previous data &ndash; no new assay necessary!
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+
+### Nanopore
+]
+.right-column[
+In either of these cases, local on-node HPC-like approaches (C/C++, high performance, threading, memory efficient)
+
+But to reach potential, need a scale of running, orchestration, training which is more easilly obtained with other sorts of tools
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+
+### Nanopore
+
+### CanDIG
+]
+.right-column[
+### Canadian Distributed Infrastructure for Genomics
+
+My current project: [http://www.distributedgenomics.ca](http://www.distributedgenomics.ca)
+
+In Canada, healthcare (and health data) is provincial jurisdiciton
+* But want to be able to enable analysis over nation-scale populations
+
+This isn't necessarily a problem for research projects
+* Consented to sharing
+* Data sharing agrements (but labour intensive and bespoke)
+
+But by ~2020, we're expecting most genomic data to be routine health care data
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+
+### Nanopore
+
+### CanDIG
+]
+.right-column[
+### Canadian Distributed Infrastructure for Genomics
+
+Our approach: completely decentralized infrastructure
+
+.center[<img src="assets/img/candig-decentralized.png" width=50%>]
+
+* Each data steward provides access to their data following their authorization rules
+* Common (distributed) infrastructure for distributing project memberships, etc
+* Each site provides own user authentication
+
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+
+### Nanopore
+
+### CanDIG
+]
+.right-column[
+### Canadian Distributed Infrastructure for Genomics
+
+Each site hosts a standard fleet of data access services:
+
+.center[<img src="assets/img/candig-arch.png" width=50%>]
+
+* Variants
+* Reads
+* Clinical metadata (with common metadata standards)
+* Sample metadata
+
+Current stack:
+* Go, MongoDB, Docker, Terraform, Minio, https / gRPC, OpenID Connect
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+
+### Nanopore
+
+### CanDIG
+]
+.right-column[
+### Canadian Distributed Infrastructure for Genomics
+
+<img src="assets/img/federated.png" style="float: right;" width=30%>
+
+The stack &ndash; and the services &ndash; aren't interesting in themselves except that
+you can perform federated analysis using algorithms for analysis over the services
+]
+--
+.right-column-cont[
+But this is just web services, it's neither big data nor HPC?
+- Maybe HPC or big data *inside* each centre...
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+
+### Nanopore
+
+### CanDIG
+]
+.right-column[
+### Canadian Distributed Infrastructure for Genomics
+
+<img src="assets/img/candig-decentralized.png" style="float: right;" width=30%>
+
+But the reason for the distribution isn't necessarily just geography &mdash; it's privacy and access restrictions
+
+As patients get more control over their data (and in a post? Facebook age), may have different permissions...
+* Even if the data is in the same data centre
+* Even if the data is in the same rack
+
+So big memory machines isn't enough of a solution; need a way to build computations out of data sets in distributed memory, although the computations are big-data style
+
+Need Big Data in an HPC style
+]
+---
+layout: false
+count: false
+class: center, middle, inverse
+## The Future
+---
+.left-column[
+## The Future
+]
+.right-column[
+Genomics would greatly benefit from something that could do:
+- Big data style operations
+- With HPC performance
+- And HPC ability to &ldquo;scale-down&rdquo; effectively
+- In a productive way that's easy to rapidly re-write (In genomics, we still don't know what are the best questions to ask, much less how best to ask them!)
+]
+---
+.left-column[
+## The Future
+
+### The pieces
+]
+.right-column[
+There's a lot of pieces in place that I'm really excited about
+]
+--
+.right-column-cont[
+* Efficient multicore operations on succinct data structures for genomics
+]
+--
+.right-column-cont[
+* Growth of workflow engines: let the runtime sort it out
+]
+--
+.right-column-cont[
+* PGAS and xGAS languages - including the ur-language, SHMEM, but also things like Chapel
+]
+--
+.right-column-cont[
+* Converged ethernet for cost-effective RDMA
+]
+--
+.right-column-cont[
+* RDMA + Non-volatile memory:
+    - Revisit external memory algorithms with still deeper memory hierarchy
+    - Rapid, *distributed* external memory access
+]
+---
+.left-column[
+## The Future
+
+### The pieces
+]
+.right-column[
+But work like this will take concerted effort by people with deep knowledge of many pieces of the puzzle
+
+Places like this are essential for that to happen - bringing together a wide range of expertise
+
+Very excited to be here and talk with you!
+]
+---
+
     </textarea>
     <script src="remark/remark-latest.min.js">
     </script>
