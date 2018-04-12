@@ -254,7 +254,7 @@ Widespread adption of computing and networking brought *data*, and lot of it.
     - High-throughput sequencing technologies becoming available
     - Lots and lots of data - but how to process it?
     - Arrived after traditional HPC was quite mature, optimized for its problems.
-    - &ldquo;Big Data&rdquo; was just starting to develop tools, technique
+    - &ldquo;Big Data&rdquo; was just starting to develop tools, techniques
 ---
 name: my-background-2
 layout: false
@@ -325,15 +325,20 @@ using Apache Spark.
 <img src="assets/img/ScientificComputing2017.png" width=33% style="float: right;"></img>
 
 * Genomics moving much faster than HPC, somewhat faster than Big Data in building the bridge
-
     - Immediate needs
 
-- HPC: &ldquo;convergence&rdquo; around exascale
-    - Little impact on current practice
+* HPC: &ldquo;convergence&rdquo; around exascale
+    - Future looking
 
-- Big Data: re-learning HPC lessons as needed
+* Big Data: re-learning HPC lessons as needed
     - Individual projects adopt either better single-node performance or distribute memory performance
     - Genomics needs both
+--
+* It's going to take people with knowledge of lots of different parts of computational science to make this happen
+    - To help with genomics research _now_
+    - To help transfer expertise between HPC and Big Data
+
+* And it will take places like this that bring those people together!
 ---
 layout: false
 .left-column[
@@ -562,7 +567,11 @@ Dataflow starting to attract attention in HPC, e.g. [PaRSEC at ICL](http://icl.u
 
 <img src="assets/img/parsec-toolchain.png" width=45%></img> <img src="assets/img/parsec-QR.png" width=40%></img>
 
+Describe the flow of data, but leave execution plan to compilation, runtime
+
 Make use of compilers, runtimes to more effectively parallelize complex data access patterns
+
+Tool for abstracting away architecture: performance portability
 ]
 ---
 .left-column[
@@ -639,7 +648,7 @@ Machine learning:
     - Lock-free data structures
 
 * User-space networking and ethernet library Data Plane Development Kit (DPDK: https://dpdk.org)
-    - gt; 10M packets/sec
+    - over 10M packets/sec
 
 .center[<img src="assets/img/scylladb.png" width=75%></img>]
 ]
@@ -681,6 +690,150 @@ Image from the [FaRM USENIX paper](https://www.usenix.org/system/files/conferenc
 
 #### RDMA
 
+#### Spark
+]
+.right-column[
+Spark (2012) is in some ways &ldquo;post-Hadoop&rdquo;; it can happily
+interact with the Hadoop stack but doesn't require it.
+
+Built around concept of in-memory resilient distributed datasets
+
+* Tables of rows, distributed across the job, normally in-memory
+* Immutable
+* Restricted to certain transformations 
+
+Used for database, machine learning (linear algebra, graph, tree methods), _etc._
+
+.center[<img src="assets/img/spark-rdd.png" width=50%></img>]
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### Spark
+]
+.right-column[
+<img src="assets/img/logistic-regression.png" width=33% style="float: right;"></img>
+Being in-memory was a huge performance win over Hadoop MapReduce
+for multiple passes through data.
+
+Spark immediately began supplanting MapReduce for complex calculations.
+
+
+Project Tungsten (2015) was an extensive rewriting of core Spark for performance.
+* Get rid of JVM memory management, handle it themselves (FORTRAN77 workspace arrays!)
+* Vastly improved cache performance
+* Code generation (more later)
+
+In 2016, built-in GPU support.
+]
+---
+layout: false
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### Spark
+]
+.right-column[
+Spark fault-tolerant tables (RDDs, Resiliant Distributed Datasets) prove to be a very powerful abstraction.
+
+Can easily use join, _etc._ to bring all values associated with a key together:
+  - Like all stencil terms that are contribute at a particular grid point
+  
+.center[<img src="assets/img/spark-rdds-diffusion.png" width=55%></img>]
+
+Can build on dataframes for data analysis
+]
+---
+layout: false
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### Spark
+]
+.right-column[
+Graph library &mdash; [GraphX](http://spark.apache.org/graphx/) &mdash; has also been implemented on top of RDDs.
+
+Many interesting features, but for us: [Pregel](http://blog.acolyer.org/2015/05/26/pregel-a-system-for-large-scale-graph-processing/)-like algorithms on graphs.
+
+Nodes passes messages to their neighbours along edges.
+<img src="assets/img/graphx.png" width=75%></img>
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### Spark
+]
+.right-column[
+This makes implementing unstructured mesh methods extremely straightforward:
+
+```scala
+def step(g:Graph[nodetype, edgetype]) : Graph[nodetype, edgetype] = {
+    val terms = g.aggregateMessages[msgtype](
+        // Map
+        triplet => { 
+            triplet.sendToSrc(src_msg(triplet.attr, triplet.srcAttr, triplet.dstAttr))
+            triplet.sendToDst(dest_msg(triplet.attr, triplet.srcAttr, triplet.dstAttr))
+          },
+        // Reduce
+        (a, b) => (a._1, a._2, a._3 + b._3, a._4 + b._4, a._5 + b._5, a._6 + b._6, a._7 + b._7)
+    )
+    
+    val new_nodes = terms.mapValues((id, attr) => apply_update(id, attr))
+    
+    return Graph(new_nodes, graph.edges)
+}
+```
+
+.center[<img src="assets/img/graphx-init.png" width=33%></img> <img src="assets/img/graphx-final.png" width=33%></img>]
+]
+---
+.left-column[
+## Convergence
+
+### HPC Side
+
+### Big Data Side
+
+#### Commodity H/W
+
+#### RDMA
+
+#### Spark
+
 #### TensorFlow
 ]
 .right-column[
@@ -706,6 +859,8 @@ Getting very close to traditional HPC problems
 
 #### RDMA
 
+#### Spark
+
 #### TensorFlow
 ]
 .right-column[
@@ -729,6 +884,8 @@ All are multi-threaded.
 
 #### RDMA
 
+#### Spark
+
 #### TensorFlow
 ]
 .right-column[
@@ -751,6 +908,8 @@ All are multi-threaded.
 #### Commodity H/W
 
 #### RDMA
+
+#### Spark
 
 #### TensorFlow
 ]
@@ -791,158 +950,6 @@ RPC library based on what Google uses internally.
 
 ### Big Data Side
 
-#### Commodity H/W
-
-#### RDMA
-
-#### TensorFlow
-
-#### Spark
-]
-.right-column[
-Spark (2012) is in some ways &ldquo;post-Hadoop&rdquo;; it can happily
-interact with the Hadoop stack but doesn't require it.
-
-Built around concept of in-memory resilient distributed datasets
-
-* Tables of rows, distributed across the job, normally in-memory
-* Immutable
-* Restricted to certain transformations 
-
-Used for database, machine learning (linear algebra, graph, tree methods), _etc._
-
-.center[<img src="assets/img/spark-rdd.png" width=50%></img>]
-]
----
-.left-column[
-## Convergence
-
-### HPC Side
-
-### Big Data Side
-
-#### Commodity H/W
-
-#### RDMA
-
-#### TensorFlow
-
-#### Spark
-]
-.right-column[
-<img src="assets/img/logistic-regression.png" width=33% style="float: right;"></img>
-Being in-memory was a huge performance win over Hadoop MapReduce
-for multiple passes through data.
-
-Spark immediately began supplanting MapReduce for complex calculations.
-
-
-Project Tungsten (2015) was an extensive rewriting of core Spark for performance.
-* Get rid of JVM memory management, handle it themselves (FORTRAN77 workspace arrays!)
-* Vastly improved cache performance
-* Code generation (more later)
-
-In 2016, built-in GPU support.
-]
----
-layout: false
-.left-column[
-## Convergence
-
-### HPC Side
-
-### Big Data Side
-
-#### Commodity H/W
-
-#### RDMA
-
-#### TensorFlow
-
-#### Spark
-]
-.right-column[
-Spark fault-tolerant tables (RDDs, Resiliant Distributed Datasets) prove to be a very powerful abstraction.
-
-Can easily use join, _etc._ to bring all values associated with a key together:
-  - Like all stencil terms that are contribute at a particular grid point
-  
-.center[<img src="assets/img/spark-rdds-diffusion.png" width=55%></img>]
-
-Can build on dataframes for data analysis
-]
----
-layout: false
-.left-column[
-## Convergence
-
-### HPC Side
-
-### Big Data Side
-
-#### Commodity H/W
-
-#### RDMA
-
-#### TensorFlow
-
-#### Spark
-]
-.right-column[
-Graph library &mdash; [GraphX](http://spark.apache.org/graphx/) &mdash; has also been implemented on top of RDDs.
-
-Many interesting features, but for us: [Pregel](http://blog.acolyer.org/2015/05/26/pregel-a-system-for-large-scale-graph-processing/)-like algorithms on graphs.
-
-Nodes passes messages to their neighbours along edges.
-<img src="assets/img/graphx.png" width=75%></img>
-]
----
-.left-column[
-## Convergence
-
-### HPC Side
-
-### Big Data Side
-
-#### Commodity H/W
-
-#### RDMA
-
-#### TensorFlow
-
-#### Spark
-]
-.right-column[
-This makes implementing unstructured mesh methods extremely straightforward:
-
-```scala
-def step(g:Graph[nodetype, edgetype]) : Graph[nodetype, edgetype] = {
-    val terms = g.aggregateMessages[msgtype](
-        // Map
-        triplet => { 
-            triplet.sendToSrc(src_msg(triplet.attr, triplet.srcAttr, triplet.dstAttr))
-            triplet.sendToDst(dest_msg(triplet.attr, triplet.srcAttr, triplet.dstAttr))
-          },
-        // Reduce
-        (a, b) => (a._1, a._2, a._3 + b._3, a._4 + b._4, a._5 + b._5, a._6 + b._6, a._7 + b._7)
-    )
-    
-    val new_nodes = terms.mapValues((id, attr) => apply_update(id, attr))
-    
-    return Graph(new_nodes, graph.edges)
-}
-```
-
-.center[<img src="assets/img/graphx-init.png" width=33%></img> <img src="assets/img/graphx-final.png" width=33%></img>]
-]
----
-.left-column[
-## Convergence
-
-### HPC Side
-
-### Big Data Side
-
 ### Coming Together
 ]
 .right-column[
@@ -950,14 +957,17 @@ Reaching towards similar approaches:
 
 * Both sides now capable of fully taking advantage of hardware
     - CPU, but also memory, I/O, network
+    - Accelerators
 
 * Dataflow as a model:
     - Taking advantage of modern compilers, runtimes
     - Tool for abstracting away architecture: performance portability
 
 * Higher level languages
+    - Key set of performant distributed primitives
+    - Can start slow and improve in performance
 
-* But nothing combines all of the pieces!
+* But no one toolset has all of the pieces
 ]
 ---
 layout: false
@@ -968,101 +978,17 @@ class: center, middle, inverse
 .left-column[
 ## Genomics
 
-### Data volumes
+### Computation types
+
+#### Search/Traversal
 ]
 .right-column[
-Genomic volumes currently doubling every 7-12 months
-
-Currently driven by research projects, on both human and model organisms
-
-.center[<img src="assets/img/genomic-data-volumes.png" style="float: center;" width=100%>]
-
-(From [Stephens _et al_. (2015) &ldquo;Big Data: Astronomical or Genomical?&rdquo; PLoS Biol 13(7): e1002195](https://doi.org/10.1371/journal.pbio.1002195))
-]
----
-.left-column[
-## Genomics
-
-### Data volumes
-
-#### New devices
-]
-.right-column[
-<img src="assets/img/genomic-data-volumes.png" style="float: right;" width=33%>
-This (IMHO) understates the near-term rate of change
-
-New devices are arriving which will move some sequencing from specialized core facilities to small labs (_c.f._ &ldquo;killer micros&rdquo;)
-
-.center[<img src="assets/img/MinION.jpg" width=40%> <img src="assets/img/sequencing-animated.gif" width=40%>]
-
-[Credit: [Oxford Nanopore](http://www.nanoporetech.com)]
-]
----
-.left-column[
-## Genomics
-
-### Data volumes
-
-#### New devices
-
-#### New data types
-]
-.right-column[
-Entirely new data types are becoming available for the first time:
-* Direct RNA sequencing [Credit: [Oxford Nanopore](http://www.nanoporetech.com)]
-
-.center[<img src="assets/img/RNA_v1.svg" width=50%>]
-
-
-And fairly new data types or assays are becoming more and more common:
-* Metagenomics
-* Transcriptomics
-* Epigenomics (methylation, CHiP-seq...)
-]
----
-.left-column[
-## Genomics
-
-### Data volumes
-
-#### New devices
-
-#### New data types
-
-#### Genomic medicine
-]
-.right-column[
-And all of those changes in research genomics are going to be small potatoes compared to the real elephant in the room: genomic medicine.
-
-.center[<img src="assets/img/genomic-medicine.jpg" width=50%>]
-
-[&ldquo;Genomic Medicine: A Decade of Successes, Challenges, and Opportunities&rdquo;, McCarthy, McLeod, and Ginsburg, (2013)](http://stm.sciencemag.org/content/5/189/189sr4.full)
-
-Whole genome sequencing already starting to become part of the toolkit for diagnosing rare diseases, oncology
-
-~$1000 is a lot for a test, but not unfathomable
-
-As becomes cheaper/easier/faster, will become standard of care for more and more cases
-
-And medicine is _huge_ - hospital spending alone is ~10x entire NIH budget
-]
----
-.left-column[
-  ## Outline
-  
-  ### With problems in mind:
-
-  ### Grid PDEs
-
-  ### Substring operations 
-]
-.right-column[
-(Much) more recently, working with genomics sequence data. 
+Very search heavy - indexes, graph operations, databases.
 
 Assembly:
-- Have small fragments of sequence, must generate whole 
-- Graph methods (de Bruijn or overlap graph)
-- Find maximal unambiguous paths through the graph
+* Have small fragments of sequence, must generate whole 
+* Graph methods (de Bruijn or overlap graph)
+* Find maximal unambiguous paths through the graph
 
 <table width=65%>
 <tbody>
@@ -1075,48 +1001,41 @@ given observed subsequence
 ]
 ---
 .left-column[
-  ## Outline
-  
-  ### With problems in mind:
+## Genomics
 
-  ### Grid PDEs
+### Computation types
 
-  ### Substring operations 
+#### Search/Traversal
 ]
 .right-column[
-(Much) more recently, working with genomics sequence data. 
+Very search heavy - indexes, graph operations, databases.
 
 Assembly:
-- Have small fragments of sequence, must generate whole 
-- Graph methods (de Bruijn or overlap graph)
-- Find maximal unambiguous paths through the graph
+* Have small fragments of sequence, must generate whole 
+* Graph methods (de Bruijn or overlap graph)
+* Find maximal unambiguous paths through the graph
 
 <table width=65%>
 <tbody>
-<tr><td><img src="assets/img/debruijn-graph.jpg" width=90%></img></td></tr>
-<tr><td>Figure from <a href="http://www.nature.com/nrg/journal/v14/n5/full/nrg3433.html">Nature Review Genetics</a></td></tr>
+<tr><td><img src="assets/img/zika-mosquito.png" width=90%></img></td></tr>
+<tr><td><a href="https://www.nytimes.com/2016/03/31/us/mapping-a-genetic-strategy-to-fight-the-zika-virus.html">Team of Rival Scientists Comes Together to Fight Zika, New York Times, Mar 30 2016</a></td></tr>
 </tbody>
 
 Or may have an assembled graph genome and try to find best match for
 given observed subsequence
-
-Or just count observed subsequences
-
 ]
 ---
 .left-column[
-  ## Outline
-  
-  ### With problems in mind:
+## Genomics
 
-  ### Grid PDEs
+### Computation types
 
-  ### Substring operations 
+#### Search
 
-  ### Large statistical analyses
+#### Statistics
 ]
 .right-column[
-Or just large biostatistical analyses:
+Or large biostatistical analyses:
 
 Closest to my current day job (distributed analysis of private genomics data sets)
 
@@ -1137,25 +1056,283 @@ And start correlating with other information (DNA variants, clinical data, pheno
 ]
 ---
 .left-column[
-## My Benchmark Problems
+## Genomics
 
-### PDEs
+### Computation types
+
+### Toolsets
 ]
 .right-column[
-Heavy reliance on execution-graph optimizers has a lot of promise for highly dynamic simulations.
+So why doesn't genomics just use current HPC tool sets like MPI and OpenMP?
+]
+--
+.right-column-cont[
+<table width=100%>
+<tbody>
+<tr><td><img src="assets/img/dumpster-fire.jpg" width=90%></img></td></tr>
+<tr><td><b>Fig. 1</b>: aftermath of attempt to use current HPC toolsets like MPI and OpenMP</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/elisfanclub/2909042744">https://www.flickr.com/photos/elisfanclub/2909042744</a></td></tr>
+</tbody>
+]
+---
+.left-column[
+## Genomics
 
-But where we are now, big Data frameworks aren't going to come save me from the current state of the art in large-scale PDE frameworks:
-* [Trilinos](https://trilinos.org/capability-areas/meshes-geometry-and-load-balancing/)
-* [BoxLib](https://ccse.lbl.gov/BoxLib/)
-* ...
+### Computation types
 
-Amazing efforts, great tools, and the world is much better with
-them that it would be without them.
+### Toolsets
+]
+.right-column[
+So why doesn't genomics just use current HPC tool sets like MPI and OpenMP?
 
-But huge code bases, very challenging to start with as a user, very
-difficult to make significant changes.
+Really designed for quite regular data access, SPMD.
+* `omp parallel for`, `MPI_Neighbor_allgather` - these aren't things that make sense here
+* There's a reason distributed databases (_e.g._) aren't written using these tools
 
-Based on MPI, which you may have heard I have opinions about.
+People do in fact try:
+* Abyss
+* [Ray](https://sourceforge.net/projects/denovoassembler/)
+
+And have somewhat more luck with PGAS tools
+* [HipMer](https://sourceforge.net/projects/hipmer/) (UPC)
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+]
+.right-column[
+So why doesn't genomics just use current Big Data tools like FaRM or SycllaDB?
+
+See Figure 1:
+* High-performance low-level pieces
+* No meaningful way to build into an application - standalone tool
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+]
+.right-column[
+So why doesn't genomics just use current Big Data tools like Spark?
+]
+--
+.right-column-cont[
+<table width=100%>
+<tbody>
+<tr><td><img src="assets/img/snail.jpg" width=90%></img></td></tr>
+<tr><td><b>Fig. 2</b>: attempt to use current big data toolsets like Spark</td></tr>
+<tr><td><a href="https://pixabay.com/en/snail-slow-shell-mollusk-close-up-1844618/">https://pixabay.com/en/snail-slow-shell-mollusk-close-up-1844618/</a></td></tr>
+</tbody>
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+]
+.right-column[
+So why doesn't genomics just use current Big Data tools like Spark?
+
+Too slow &ndash; especially at *small* scale! &ndash; even for the biostatistics work
+* These tools are built assuming very large datasets
+* The nature of scientific work requires the tools to work at small scale first
+
+<table width=100%>
+<tbody>
+<tr><td><img src="assets/img/COST.png" width=90%></img></td></tr>
+<tr><td>From <a href="http://www.frankmcsherry.org/assets/COST.pdf">&ldquo;Scalability - but at what COST?&rdquo;</a>, McSherry, Isard, Murray (2015)</td></tr>
+</tbody>
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+]
+.right-column[
+<img src="assets/img/hail-vds-rep.png" width=50% style="float:right;"></img>
+
+Here's where we are now - the Broad institute in Boston put together the
+[Hail project](https://www.hail.is/hail/overview.html#variant-dataset-vds):
+* Based on Spark 
+
+* &ldquo;does person X have genetic variant Y&rdquo; matrix of records
+
+* Interactively query reductions of rows and columns 
+
+* A big problem is several billion entries.  Future proof, but...
+
+* This is not a hard problem!
+
+* Very unwieldly for individual researchers on smaller sets.
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+]
+.right-column[
+I claim those of us in the providing-parallel-computing-environments business have kind of failed Genomics so far.
+
+And this is going to start mattering very soon.
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+
+### Data volumes
+]
+.right-column[
+Genomic volumes currently doubling every 7-12 months
+
+Currently driven by research projects, on both human and model organisms
+
+.center[<img src="assets/img/genomic-data-volumes.png" style="float: center;" width=100%>]
+
+(From [Stephens _et al_. (2015) &ldquo;Big Data: Astronomical or Genomical?&rdquo; PLoS Biol 13(7): e1002195](https://doi.org/10.1371/journal.pbio.1002195))
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+
+### Data volumes
+
+#### New devices
+]
+.right-column[
+<img src="assets/img/genomic-data-volumes.png" style="float: right;" width=33%>
+This (IMHO) understates the near-term rate of change
+
+New devices are arriving which will move some sequencing from specialized core facilities to small labs (_c.f._ &ldquo;killer micros&rdquo;)
+
+.center[<img src="assets/img/MinION.jpg" width=40%> <img src="assets/img/sequencing-animated.gif" width=40%>]
+
+[Credit: [Oxford Nanopore](http://www.nanoporetech.com)]
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+
+### Data volumes
+
+#### New devices
+
+#### New data types
+]
+.right-column[
+Entirely new data types are becoming available for the first time:
+* Direct RNA sequencing [Credit: [Oxford Nanopore](http://www.nanoporetech.com)]
+
+.center[<img src="assets/img/RNA_v1.svg" width=50%>]
+
+And fairly new data assays and analyses are becoming more and more common:
+* Metagenomics
+* Transcriptomics
+* Epigenomics (methylation, CHiP-seq...)
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+
+### Data volumes
+
+#### New devices
+
+#### New data types
+
+#### Genomic medicine
+]
+.right-column[
+And all of those changes in research genomics are going to be small potatoes compared to the real elephant in the room: genomic medicine.
+
+<table width=75%>
+<tbody>
+<tr><td><img src="assets/img/genomic-medicine.jpg" width=80%></td></tr>
+<tr><td>Figure from <a href="http://stm.sciencemag.org/content/5/189/189sr4.full">&ldquo;Genomic Medicine: A Decade of Successes, Challenges, and Opportunities&rdquo;, McCarthy, McLeod, and Ginsburg, (2013)</a></td></tr>
+</tbody>
+</table>
+
+Whole genome sequencing already starting to become part of the toolkit for diagnosing rare diseases, oncology
+
+~$1000 is a lot for a test, but not unfathomable
+
+As becomes cheaper/easier/faster, will become standard of care for more and more cases
+
+And medicine is _huge_ - hospital spending alone is ~10x entire NIH budget
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+
+### Data volumes
+
+### New Analyses
+]
+.right-column[
+If it was just about doing larger numbers of the same analyses, Genomics would be in pretty good shape, computationally
+* Embarassingly parallel
+* Linear scaling with data
+* Need more resources, but just additional copies of the same resources
+]
+--
+.right-column[
+But more data and better techniques make possible &ndash; make necessary &ndash; completely different kinds of analyses
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+
+### Data volumes
+
+### New Analyses
+
+#### Metagenomics
+]
+.right-column[
+<table width=75%>
+<tbody>
+<tr><td><img src="assets/img/metagenomics.jpg" width=90%></td></tr>
+<tr><td>Figure from <a href="http://stm.sciencemag.org/content/5/189/189sr4.full">&ldquo;Genomic Medicine: A Decade of Successes, Challenges, and Opportunities&rdquo;, McCarthy, McLeod, and Ginsburg, (2013)</a></td></tr>
+</tbody>
+</table>
 ]
 ---
 .left-column[
@@ -1212,33 +1389,6 @@ large enough.
 - Big international genomics projects 
 
 Death valley in between.
-]
----
-.left-column[
-## My Benchmark Problems
-
-### PDEs
-
-### Genomics
-
-### Biostatistics
-]
-.right-column[
-<img src="assets/img/hail-vds-rep.png" width=50% style="float:right;"></img>
-
-Here's where we are now - the Broad institute in Boston put together the
-[Hail project](https://www.hail.is/hail/overview.html#variant-dataset-vds):
-* Based on Spark 
-
-* "does person X have genetic variant Y" matrix of records
-
-* Interactively query reductions of rows and columns 
-
-* A big problem is several billion entries.  Future proof, but...
-
-* This is not a hard problem!
-
-* Very unwieldly for individual researchers on smaller sets.
 ]
 ---
     </textarea>
