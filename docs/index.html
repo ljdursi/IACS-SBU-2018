@@ -185,19 +185,19 @@ layout: false
   ### Old HPC Hand...
 ]
 .right-column[
-  Ex-astrophysicist turned large-scale computing.
+* Ex-astrophysicist turned large-scale computing.
 
-- Large-scale high-speed adaptive reactive fluid fluids
+* Large-scale high-speed adaptive reactive fluid fluids
 
     - DOE ASCI Center at Chicago
 
-- FORTRAN, MPI, Oct-tree regular adaptive mesh
+* FORTRAN, MPI, Oct-tree regular adaptive mesh
 
-- Joined HPC centre after postdoc
+* Joined HPC centre after postdoc
 
     - OpenMP, CUDA, C++
 
-- Worked with researchers on wide variety of problems
+* Worked with researchers on wide variety of problems
 ]
 ---
 .left-column[
@@ -392,7 +392,7 @@ HPCs path over the last ~20 years has largely been about scale
 * Story mainly about hardware
 
 * Fundamental software stack largely unchanged 
-    - (though adoption of directive-based approaches for accelerators suggests some willingess to adopt new approaches)
+    - (though adoption of directive-based approaches for accelerators suggests some willingess to adopt new approaches when they are compelling enough - OpenMP/OpenACC/OpenUH..)
 
 <img src="assets/img/convergence-hpc-bigger.png" width=75% style="float: center;"></img>
 ]
@@ -983,9 +983,9 @@ class: center, middle, inverse
 #### Search/Traversal
 ]
 .right-column[
-Very search heavy - indexes, graph operations, databases.
+One type of workload: very search heavy - indexes, graph operations, databases.
 
-Assembly:
+Typified by assembly:
 * Have small fragments of sequence, must generate whole 
 * Graph methods (de Bruijn or overlap graph)
 * Find maximal unambiguous paths through the graph
@@ -1008,9 +1008,9 @@ given observed subsequence
 #### Search/Traversal
 ]
 .right-column[
-Very search heavy - indexes, graph operations, databases.
+One type of workload: very search heavy - indexes, graph operations, databases.
 
-Assembly:
+Typified by assembly:
 * Have small fragments of sequence, must generate whole 
 * Graph methods (de Bruijn or overlap graph)
 * Find maximal unambiguous paths through the graph
@@ -1035,9 +1035,7 @@ given observed subsequence
 #### Statistics
 ]
 .right-column[
-Or large biostatistical analyses:
-
-Closest to my current day job (distributed analysis of private genomics data sets)
+Another is large biostatistical analyses:
 
 Imagine RNA sequence expression data:
 - 100m fragments of sequence (imperfect sampling)
@@ -1094,7 +1092,7 @@ People do in fact try:
 * [Ray](https://sourceforge.net/projects/denovoassembler/)
 
 And have somewhat more luck with PGAS tools
-* [HipMer](https://sourceforge.net/projects/hipmer/) (UPC)
+* [HipMer](http://portal.nersc.gov/project/hipmer/) (UPC++)
 ]
 ---
 .left-column[
@@ -1140,9 +1138,7 @@ So why doesn't genomics just use current Big Data tools like Spark?
 ### Toolsets
 ]
 .right-column[
-So why doesn't genomics just use current Big Data tools like Spark?
-
-Too slow &ndash; especially at *small* scale! &ndash; even for the biostatistics work
+Too slow &ndash; especially at *small* scale! &ndash; even for the biostatistics work that it's well suited for
 * These tools are built assuming very large datasets
 * The nature of scientific work requires the tools to work at small scale first
 
@@ -1188,7 +1184,15 @@ Here's where we are now - the Broad institute in Boston put together the
 .right-column[
 I claim those of us in the providing-parallel-computing-environments business have kind of failed Genomics so far.
 
-And this is going to start mattering very soon.
+Large genomics today means buying or renting very large RAM machines.
+
+Good news: there's lots of great work algorithmic being done in the genomics community, including right here
+* Succinct data structures
+* Approximate (and exact) sketching and streaming methods
+
+Even so, common to have bioinformatics analyses held up waiting for access to large-memory machines
+
+And it's not going to get better...
 ]
 ---
 .left-column[
@@ -1250,11 +1254,6 @@ Entirely new data types are becoming available for the first time:
 * Direct RNA sequencing [Credit: [Oxford Nanopore](http://www.nanoporetech.com)]
 
 .center[<img src="assets/img/RNA_v1.svg" width=50%>]
-
-And fairly new data assays and analyses are becoming more and more common:
-* Metagenomics
-* Transcriptomics
-* Epigenomics (methylation, CHiP-seq...)
 ]
 ---
 .left-column[
@@ -1327,68 +1326,200 @@ But more data and better techniques make possible &ndash; make necessary &ndash;
 #### Metagenomics
 ]
 .right-column[
+Metagenomics &ndash; doing sequencing of an environmental sample, and putting together a census of microbes 
+* Human health
+    - Wounds - infection
+    - Environment - pathogens, antibiotic resistance
+    - Gut flora, skin, _etc._
+
+* Environment
+    - Waterways, etc
+    - Looking for health of ecosystem
+
 <table width=75%>
 <tbody>
 <tr><td><img src="assets/img/metagenomics.jpg" width=90%></td></tr>
-<tr><td>Figure from <a href="http://stm.sciencemag.org/content/5/189/189sr4.full">&ldquo;Genomic Medicine: A Decade of Successes, Challenges, and Opportunities&rdquo;, McCarthy, McLeod, and Ginsburg, (2013)</a></td></tr>
+<tr><td><a href="https://twitter.com/erikgarrison/status/969560993922736128">https://twitter.com/erikgarrison/status/969560993922736128</a></td></tr>
 </tbody>
 </table>
 ]
 ---
 .left-column[
-## My Benchmark Problems
+## Genomics
 
-### PDEs
+### Computation types
 
-### Genomics
+### Toolsets
+
+### Data volumes
+
+### New Analyses
+
+#### Metagenomics
 ]
 .right-column[
-Large genomics today means buying or renting very large (up to 1TB) RAM machines.
+Already complicated if one is looking for novel microbes, genes
+* Have to perform metagenomic assembly - don't even know how many types of critters you have
 
-I'm starting to think that this reflects a failure of our parallel programming community.
+Incredible diversity of microbes, wnat to be able to index and look up
+* Huge data sets
 
-Good news: there's lots of great work algorithmic being done in the genomics community
-- Succinct data structures
-- Approximate streaming methods
+Timeseries: 
+* How do populations shift over time
 
-But this is work done because of scarsity, and the size of projects being tackled is being limited.
+Very large data sets
 ]
 ---
 .left-column[
-## My Benchmark Problems
+## Genomics
 
-### PDEs
+### Computation types
 
-### Genomics
+### Toolsets
+
+### Data volumes
+
+### New Analyses
+
+#### Metagenomics
+
+#### Population genomics
 ]
 .right-column[
-There are projects like [HipMer](http://portal.nersc.gov/project/hipmer/)
-(large-scale assembler, UPC++), but not a general solution.
 
-GraphX for Spark could be useful, but only becomes performant on 
-huge problems
-- &ldquo;Missing Middle&rdquo; for where most of the work is, and for adoption
+Current human genomics pipelines are based around a single human reference genome
+* But large amount of variation and diversity!
+* Especially in some genomic regions, e.g. those associated with immune system
+* Known differences between populations
+
+Prefer to have rather than a single linear reference, a graph which incorporates known variation
+* Tools becoming available
+* Creating these graphs (and their indices) is non trival, requires significant memory
+* Using the index will require more memory than currently
+
+<table width=75%>
+<tbody>
+<tr><td><img src="assets/img/genome_graphs.jpg" width=90%></td></tr>
+<tr><td>Paten B, <i>et al.</i> <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5411762/">&ldquo;Genome graphs and the evolution of genome inference&rdquo;</a> Gen Res. (2017)</td></tr>
+</tbody>
+</table>
 ]
 ---
 .left-column[
-## My Benchmark Problems
+## Genomics
 
-### PDEs
+### Computation types
 
-### Genomics
+### Toolsets
 
-### Biostatistics
+### Data volumes
+
+### New Analyses
+
+#### Metagenomics
+
+#### Population genomics
+
+#### RNA
 ]
 .right-column[
-Biostatistics is in exactly the same boat.
+DNA is just the beginning - the recipe book that is read from during cell processes.
 
-R works really, really well for ~desktop-scale problems.
+<table width=75%>
+<tbody>
+<tr><td><img src="assets/img/transcript-atlas-april-2016.gif" width=90%></td></tr>
+<tr><td><a href="http://www.gene-quantification.de">http://www.gene-quantification.de</a></td></tr>
+</tbody>
+</table>
 
-Spark (or a number of other things) work if the data size starts
-large enough.
-- Big international genomics projects 
+Each cell type expresses different levels of transcripts for genes, and often different forms of those transcripts
 
-Death valley in between.
+Directly describes disease state
+]
+---
+.left-column[
+## Genomics
+
+### Computation types
+
+### Toolsets
+
+### Data volumes
+
+### New Analyses
+
+#### Metagenomics
+
+#### Population genomics
+
+#### RNA
+]
+.right-column[
+But now not one static genome for a patient &ndash; many, over time
+
+Much larger data sets, indexes.
+
+<table width=75%>
+<tbody>
+<tr><td><img src="assets/img/human-cell-atlas.jpg" width=90%></td></tr>
+<tr><td><a href="https://www.humancellatlas.org">https://www.humancellatlas.org</a></td></tr>
+</tbody>
+</table>
+
+Human Cell Atlas - billions of cells, RNA expression, imaging; petabytes of data
+]
+---
+layout: false
+count: false
+class: center, middle, inverse
+## Projects
+---
+.left-column[
+## Projects
+]
+.right-column[
+The approach to convergence so far in many genomics projects has been to &ldquo;pick and choose&rdquo;
+* Adopt HPC-like approaches within nodes
+    - Very high performance threading, memory-use, careful with synchroniztion
+* And cloud/big-data approaches for orchestration
+    - Cloud, workflow/dataflow
+    - Data handling
+]
+--
+.right-column-cont[
+Will talk about three projects, how they've straddled the HPC/Big Data divide, and what would be possible if the divide were narrower
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+]
+.right-column[
+### Pan-Cancer Analysis of Whole Genomes
+
+International effort
+* Consistent analysis of 2,778 paired tumour/normal sequenced whole genomes
+* ~30 cancer types
+* Dozens of projects
+
+<img src="assets/img/pcawg-map.png" width=75%></img>
+]
+---
+.left-column[
+## Projects
+
+### PCAWG
+]
+.right-column[
+### Pan-Cancer Analysis of Whole Genomes
+
+International effort
+* Consistent analysis of 2,778 paired tumour/normal sequenced whole genomes
+* ~30 cancer types
+* Dozens of projects
+
+<img src="assets/img/pcawg_snvs.png" width=45%></img> <img src="assets/img/pcawg_indels.png" width=45%></img>
 ]
 ---
     </textarea>
